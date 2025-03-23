@@ -193,11 +193,11 @@ class SettingClass():
         self.k_step = float(config.get("Config", "k_step"))
         self.layers_per_k = int(config.get("Config", "layers_per_k"))
         self.z_offset = float(config.get("Config", "z_offset"))
-        self.size = tuple(float(v) for v in re.findall("(\d+(?:\.\d+)?)", config.get("Config", "size")))
-        self.retract = tuple(float(v) for v in re.findall("(\d+(?:\.\d+)?)", config.get("Config", "retract")))
-        self.bed_size = tuple(float(v) for v in re.findall("(\d+(?:\.\d+)?)", config.get("Config", "bed_size")))
-        self.temperature = tuple(int(v) for v in re.findall("(\d+(?:\.\d+)?)", config.get("Config", "temperature")))
-        self.path_spd_fractions = tuple(float(v) for v in re.findall("(\d+(?:\.\d+)?)", config.get("Config", "path_spd_fractions")))
+        self.size = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "size")))
+        self.retract = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "retract")))
+        self.bed_size = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "bed_size")))
+        self.temperature = tuple(int(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "temperature")))
+        self.path_spd_fractions = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "path_spd_fractions")))
         self.retract_at_layer_change = True if "true" in config.get("Config", "retract_at_layer_change").lower() else False
         self.double_perimeter = True if "true" in config.get("Config", "double_perimeter").lower() else False
         self.use_ABL = True if "true" in config.get("Config", "use_ABL").lower() else False
