@@ -237,7 +237,7 @@
         </div>
         <div class="input-group mb-3">
           <div class="input-group-text btn btn-light border" onclick="use_abl.checked = !use_abl.checked; abl_type.disabled = !use_abl.checked">
-            <input id="use_abl" class="form-check-input" type="checkbox" onchange="abl_type.disabled = !this.checked">
+            <input id="use_abl" class="form-check-input" type="checkbox" onclick="event.stopPropagation(); abl_type.disabled = !use_abl.checked">
           </div>
           <span class="input-group-text btn btn-light text-start border w-50" onclick="use_abl.checked = !use_abl.checked; abl_type.disabled = !use_abl.checked">Use autoleveling</span>
           <select id="abl_type" class="form-select" disabled>
