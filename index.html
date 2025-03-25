@@ -82,15 +82,15 @@
         <h6>Start, stop and step values for K-factor calibration</h6>
         <div class="input-group mb-3">
           <span class="input-group-text">From K = </span>
-          <input id="k_start" type="number" class="form-control" min="0" max="2" value="0.0" step="0.001" onchange="calculate()">
+          <input id="k_start" type="number" class="form-control" min="0" max="2" value="0.0" step="0.001" oninput="size_z_update()">
           <span class="input-group-text">to K = </span>
-          <input id="k_end" type="number" class="form-control" min="0" max="2" value="0.2" step="0.001">
+          <input id="k_end" type="number" class="form-control" min="0" max="2" value="0.2" step="0.001" oninput="size_z_update()">
           <span class="input-group-text">change by</span>
-          <input id="k_step" type="number" class="form-control" min="0" max="0.1" value="0.001" step="0.001" onchange="size_z_update()">
+          <input id="k_step" type="number" class="form-control" min="0" max="0.1" value="0.001" step="0.001" oninput="size_z_update()">
         </div>
         <div class="input-group mb-3">
           <span class="input-group-text">Number of layers printed with any specific K-factor</span>
-          <input id="layers_per_k" type="number" class="form-control" min="0" max="20" value="5" onchange="calculate()">
+          <input id="layers_per_k" type="number" class="form-control" min="0" max="20" value="5" oninput="size_z_update()">
         </div>
         <hr class="mb-3"/>
         <div class="row mb-2">
@@ -150,7 +150,7 @@
         <div class="input-group">
           <span class="input-group-text">Cooling</span>
           <input type="range" class="form-control" id="coolingRange" min="0" max="100" value="50" oninput="this.nextElementSibling.value = this.value">
-          <input id="def_cooling" type="number" class="form-control text no-spinner input-group-extra" id="coolingInput" min="0" max="100" value="50" onchange="this.previousElementSibling.value = this.value">
+          <input id="def_cooling" type="number" class="form-control text no-spinner input-group-extra" id="coolingInput" min="0" max="100" value="50" oninput="this.previousElementSibling.value = this.value">
           <span class="input-group-text">%</span>
         </div>
         <hr class="mb-3"/>
@@ -187,7 +187,7 @@
         </div>
         <div class="input-group mb-3">
           <span class="input-group-text w-50">Layer height</span>
-          <input id="def_layer" type="number" class="form-control" min="0.01" max="10" step="0.01" value="0.3" onchange="size_z_update()">
+          <input id="def_layer" type="number" class="form-control" min="0.01" max="10" step="0.01" value="0.3" oninput="size_z_update()">
           <span class="input-group-text">mm</span>
         </div>
         <div class="input-group mb-3">
@@ -303,7 +303,15 @@
       }
 
       function size_z_update() {
-        size_z.value = def_layer.value / k_step.value
+        console.log('k_end =', k_end.value)
+        console.log('k_start =', k_start.value)
+        console.log('k_step =', k_step.value)
+        const k_values = Math.abs(parseFloat(k_end.value) - parseFloat(k_start.value)) / parseFloat(k_step.value)
+        console.log('k_values =', k_values)
+        const height = k_values * parseInt(layers_per_k.value) * parseFloat(def_layer.value)
+        console.log('height =', height)
+
+        size_z.value = height.toFixed(1)
         calculate()
       }
 
