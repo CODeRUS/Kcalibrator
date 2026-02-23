@@ -82,6 +82,12 @@ class Toplevel:
         self.style.map('.',background=
             [('selected', _compcolor), ('active',_ana2color)])
 
+        # Layout constants (window 620x400)
+        self.WIN_W, self.WIN_H = 620, 400
+        self.PATTERN_W, self.PATTERN_H = 360, 236
+        self.MACHINE_W, self.MACHINE_H = 360, 125
+        self.PRINT_W, self.PRINT_H = 230, 339
+
         top.geometry("620x400+400+250")
         top.minsize(620, 400)
         top.maxsize(1920, 1080)
@@ -92,8 +98,7 @@ class Toplevel:
         top.configure(highlightcolor="black")
 
         self.lf_PatternConfig = tk.LabelFrame(top)
-        self.lf_PatternConfig.place(relx=0.016, rely=0.001, relheight=0.59
-                , relwidth=0.581)
+        self.lf_PatternConfig.place(x=10, y=0, width=self.PATTERN_W, height=self.PATTERN_H)
         self.lf_PatternConfig.configure(relief='groove')
         self.lf_PatternConfig.configure(font="-family {Segoe UI} -size 10 -weight bold -slant roman -underline 0 -overstrike 0")
         self.lf_PatternConfig.configure(foreground="black")
@@ -103,8 +108,7 @@ class Toplevel:
         self.lf_PatternConfig.configure(highlightcolor="black")
 
         self._lbl_StartStopStep = ttk.Label(self.lf_PatternConfig)
-        self._lbl_StartStopStep.place(relx=0.014, rely=0.085, height=19
-                , width=299, bordermode='ignore')
+        self._lbl_StartStopStep.place(x=5, y=0, height=19, width=299)
         self._lbl_StartStopStep.configure(background="#d9d9d9")
         self._lbl_StartStopStep.configure(foreground="#000000")
         self._lbl_StartStopStep.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -115,8 +119,7 @@ class Toplevel:
         self._lbl_StartStopStep.configure(text='''Start, stop and step values for K-factor calibration''')
 
         self.ent_StartK = ttk.Entry(self.lf_PatternConfig)
-        self.ent_StartK.place(relx=0.189, rely=0.191, relheight=0.085
-                , relwidth=0.153, bordermode='ignore')
+        self.ent_StartK.place(x=68, y=25, height=20, width=55)
         self.ent_StartK.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
         self.ent_StartK.configure(takefocus="")
         # self.ent_StartK.configure(cursor="ibeam")
@@ -124,8 +127,7 @@ class Toplevel:
         self.ent_StartK.configure(textvariable = self.ent_StartK_var)
 
         self.ent_StepK = ttk.Entry(self.lf_PatternConfig)
-        self.ent_StepK.place(relx=0.831, rely=0.191, relheight=0.085
-                , relwidth=0.153, bordermode='ignore')
+        self.ent_StepK.place(x=299, y=25, height=20, width=55)
         self.ent_StepK.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
         self.ent_StepK.configure(takefocus="")
         # self.ent_StepK.configure(cursor="ibeam")
@@ -133,8 +135,7 @@ class Toplevel:
         self.ent_StepK.configure(textvariable = self.ent_StepK_var)
 
         self._lbl_KFrom = ttk.Label(self.lf_PatternConfig)
-        self._lbl_KFrom.place(relx=0.014, rely=0.191, height=20, width=60
-                , bordermode='ignore')
+        self._lbl_KFrom.place(x=5, y=25, height=20, width=60)
         self._lbl_KFrom.configure(background="#d9d9d9")
         self._lbl_KFrom.configure(foreground="#000000")
         self._lbl_KFrom.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -145,8 +146,7 @@ class Toplevel:
         self._lbl_KFrom.configure(text='''From K =''')
 
         self._lbl_KTo = ttk.Label(self.lf_PatternConfig)
-        self._lbl_KTo.place(relx=0.35, rely=0.191, height=20, width=40
-                , bordermode='ignore')
+        self._lbl_KTo.place(x=126, y=25, height=20, width=40)
         self._lbl_KTo.configure(background="#d9d9d9")
         self._lbl_KTo.configure(foreground="#000000")
         self._lbl_KTo.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -157,8 +157,7 @@ class Toplevel:
         self._lbl_KTo.configure(text='''to K =''')
 
         self._lbl_KBy = ttk.Label(self.lf_PatternConfig)
-        self._lbl_KBy.place(relx=0.636, rely=0.191, height=22, width=65
-                , bordermode='ignore')
+        self._lbl_KBy.place(x=229, y=25, height=22, width=65)
         self._lbl_KBy.configure(background="#d9d9d9")
         self._lbl_KBy.configure(foreground="#000000")
         self._lbl_KBy.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -169,8 +168,7 @@ class Toplevel:
         self._lbl_KBy.configure(text='''change by''')
 
         self._lbl_FastSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_FastSpeed.place(relx=0.014, rely=0.532, height=22, width=70
-                , bordermode='ignore')
+        self._lbl_FastSpeed.place(x=5, y=106, height=22, width=70)
         self._lbl_FastSpeed.configure(background="#d9d9d9")
         self._lbl_FastSpeed.configure(foreground="#000000")
         self._lbl_FastSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -181,16 +179,14 @@ class Toplevel:
         self._lbl_FastSpeed.configure(text='''Fast speed''')
 
         self.ent_FastSpeed = ttk.Entry(self.lf_PatternConfig)
-        self.ent_FastSpeed.place(relx=0.214, rely=0.532, relheight=0.085
-                , relwidth=0.139, bordermode='ignore')
+        self.ent_FastSpeed.place(x=77, y=106, height=20, width=50)
         self.ent_FastSpeed.configure(takefocus="")
         # self.ent_FastSpeed.configure(cursor="ibeam")
         self.ent_FastSpeed_var = tk.StringVar()
         self.ent_FastSpeed.configure(textvariable = self.ent_FastSpeed_var)
 
         self._lbl_SlowSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_SlowSpeed.place(relx=0.522, rely=0.532, height=22, width=75
-                , bordermode='ignore')
+        self._lbl_SlowSpeed.place(x=188, y=106, height=22, width=75)
         self._lbl_SlowSpeed.configure(background="#d9d9d9")
         self._lbl_SlowSpeed.configure(foreground="#000000")
         self._lbl_SlowSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -201,8 +197,7 @@ class Toplevel:
         self._lbl_SlowSpeed.configure(text='''Slow speed''')
 
         self.ent_SlowSpeed = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SlowSpeed.place(relx=0.722, rely=0.532, relheight=0.085
-                , relwidth=0.139, bordermode='ignore')
+        self.ent_SlowSpeed.place(x=260, y=106, height=20, width=50)
         self.ent_SlowSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
         self.ent_SlowSpeed.configure(takefocus="")
         # self.ent_SlowSpeed.configure(cursor="ibeam")
@@ -210,8 +205,7 @@ class Toplevel:
         self.ent_SlowSpeed.configure(textvariable = self.ent_SlowSpeed_var)
 
         self._lbl_Speeds = ttk.Label(self.lf_PatternConfig)
-        self._lbl_Speeds.place(relx=0.014, rely=0.426, height=22, width=325
-                , bordermode='ignore')
+        self._lbl_Speeds.place(x=5, y=81, height=22, width=325)
         self._lbl_Speeds.configure(background="#d9d9d9")
         self._lbl_Speeds.configure(foreground="#000000")
         self._lbl_Speeds.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -222,8 +216,7 @@ class Toplevel:
         self._lbl_Speeds.configure(text='''Speed values for pattern generation''')
 
         self._lbl_LayersPerK = ttk.Label(self.lf_PatternConfig)
-        self._lbl_LayersPerK.place(relx=0.014, rely=0.298, height=22, width=305
-                , bordermode='ignore')
+        self._lbl_LayersPerK.place(x=5, y=50, height=22, width=305)
         self._lbl_LayersPerK.configure(background="#d9d9d9")
         self._lbl_LayersPerK.configure(foreground="#000000")
         self._lbl_LayersPerK.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -234,8 +227,7 @@ class Toplevel:
         self._lbl_LayersPerK.configure(text='''Number of layers printed with any specific K-factor''')
 
         self.ent_StopK = ttk.Entry(self.lf_PatternConfig)
-        self.ent_StopK.place(relx=0.472, rely=0.191, relheight=0.085
-                , relwidth=0.153, bordermode='ignore')
+        self.ent_StopK.place(x=170, y=25, height=20, width=55)
         self.ent_StopK.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
         self.ent_StopK.configure(takefocus="")
         # self.ent_StopK.configure(cursor="ibeam")
@@ -243,40 +235,35 @@ class Toplevel:
         self.ent_StopK.configure(textvariable = self.ent_StopK_var)
 
         self.ent_LayersPerK = ttk.Entry(self.lf_PatternConfig)
-        self.ent_LayersPerK.place(relx=0.872, rely=0.298, relheight=0.085
-                , relwidth=0.111, bordermode='ignore')
+        self.ent_LayersPerK.place(x=314, y=50, height=20, width=40)
         self.ent_LayersPerK.configure(takefocus="")
         # self.ent_LayersPerK.configure(cursor="ibeam")
         self.ent_LayersPerK_var = tk.StringVar()
         self.ent_LayersPerK.configure(textvariable = self.ent_LayersPerK_var)
 
         self.ent_SpdFr1 = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SpdFr1.place(relx=0.478, rely=0.638, relheight=0.085
-                , relwidth=0.139, bordermode='ignore')
+        self.ent_SpdFr1.place(x=172, y=131, height=20, width=50)
         self.ent_SpdFr1.configure(takefocus="")
         # self.ent_SpdFr1.configure(cursor="ibeam")
         self.ent_SpdFr1_var = tk.StringVar()
         self.ent_SpdFr1.configure(textvariable = self.ent_SpdFr1_var)
 
         self.ent_SpdFr2 = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SpdFr2.place(relx=0.661, rely=0.638, relheight=0.085
-                , relwidth=0.139, bordermode='ignore')
+        self.ent_SpdFr2.place(x=238, y=131, height=20, width=50)
         self.ent_SpdFr2.configure(takefocus="")
         # self.ent_SpdFr2.configure(cursor="ibeam")
         self.ent_SpdFr2_var = tk.StringVar()
         self.ent_SpdFr2.configure(textvariable = self.ent_SpdFr2_var)
 
         self.ent_SpdFr3 = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SpdFr3.place(relx=0.844, rely=0.638, relheight=0.085
-                , relwidth=0.139, bordermode='ignore')
+        self.ent_SpdFr3.place(x=304, y=131, height=20, width=50)
         self.ent_SpdFr3.configure(takefocus="")
         # self.ent_SpdFr3.configure(cursor="ibeam")
         self.ent_SpdFr3_var = tk.StringVar()
         self.ent_SpdFr3.configure(textvariable = self.ent_SpdFr3_var)
 
         self._lbl_SpeedFractions = ttk.Label(self.lf_PatternConfig)
-        self._lbl_SpeedFractions.place(relx=0.014, rely=0.638, height=22
-                , width=160, bordermode='ignore')
+        self._lbl_SpeedFractions.place(x=5, y=131, height=22, width=160)
         self._lbl_SpeedFractions.configure(background="#d9d9d9")
         self._lbl_SpeedFractions.configure(foreground="#000000")
         self._lbl_SpeedFractions.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -287,8 +274,7 @@ class Toplevel:
         self._lbl_SpeedFractions.configure(text='''Fractions for pattern paths''')
 
         self._lbl_PatternSize = ttk.Label(self.lf_PatternConfig)
-        self._lbl_PatternSize.place(relx=0.014, rely=0.787, height=22, width=160
-                , bordermode='ignore')
+        self._lbl_PatternSize.place(x=5, y=166, height=22, width=160)
         self._lbl_PatternSize.configure(background="#d9d9d9")
         self._lbl_PatternSize.configure(foreground="#000000")
         self._lbl_PatternSize.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -299,8 +285,7 @@ class Toplevel:
         self._lbl_PatternSize.configure(text='''Size of the pattern (XxYxZ):''')
 
         self._lbl_psx = ttk.Label(self.lf_PatternConfig)
-        self._lbl_psx.place(relx=0.608, rely=0.787, height=22, width=10
-                , bordermode='ignore')
+        self._lbl_psx.place(x=219, y=166, height=22, width=10)
         self._lbl_psx.configure(background="#d9d9d9")
         self._lbl_psx.configure(foreground="#000000")
         self._lbl_psx.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -311,24 +296,21 @@ class Toplevel:
         self._lbl_psx.configure(text='''x''')
 
         self.ent_PatternXsize = ttk.Entry(self.lf_PatternConfig)
-        self.ent_PatternXsize.place(relx=0.464, rely=0.787, relheight=0.085
-                , relwidth=0.139, bordermode='ignore')
+        self.ent_PatternXsize.place(x=167, y=166, height=20, width=50)
         self.ent_PatternXsize.configure(takefocus="")
         # self.ent_PatternXsize.configure(cursor="ibeam")
         self.ent_PatternXsize_var = tk.StringVar()
         self.ent_PatternXsize.configure(textvariable = self.ent_PatternXsize_var)
 
         self.ent_PatternYsize = ttk.Entry(self.lf_PatternConfig)
-        self.ent_PatternYsize.place(relx=0.642, rely=0.787, relheight=0.085
-                , relwidth=0.139, bordermode='ignore')
+        self.ent_PatternYsize.place(x=231, y=166, height=20, width=50)
         self.ent_PatternYsize.configure(takefocus="")
         # self.ent_PatternYsize.configure(cursor="ibeam")
         self.ent_PatternYsize_var = tk.StringVar()
         self.ent_PatternYsize.configure(textvariable = self.ent_PatternYsize_var)
 
         self.lbl_PatternZsize = ttk.Label(self.lf_PatternConfig)
-        self.lbl_PatternZsize.place(relx=0.789, rely=0.787, height=22, width=70
-                , bordermode='ignore')
+        self.lbl_PatternZsize.place(x=284, y=166, height=22, width=70)
         self.lbl_PatternZsize.configure(background="#d9d9d9")
         self.lbl_PatternZsize.configure(foreground="#000000")
         self.lbl_PatternZsize.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -339,8 +321,7 @@ class Toplevel:
         self.lbl_PatternZsize.configure(text='''x 100 mm''')
 
         self.chk_TwoPerimeters = tk.Checkbutton(self.lf_PatternConfig)
-        self.chk_TwoPerimeters.place(relx=0.014, rely=0.894, relheight=0.094
-                , relwidth=0.833, bordermode='ignore')
+        self.chk_TwoPerimeters.place(x=5, y=191, height=22, width=300)
         self.chk_TwoPerimeters.configure(activebackground="#ececec")
         self.chk_TwoPerimeters.configure(activeforeground="#000000")
         self.chk_TwoPerimeters.configure(background="#d9d9d9")
@@ -356,8 +337,7 @@ class Toplevel:
         self.chk_TwoPerimeters.configure(variable=self.chk_TwoPerimeters_var)
 
         self._lbl_unitsFastSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_unitsFastSpeed.place(relx=0.361, rely=0.532, height=22
-                , width=40, bordermode='ignore')
+        self._lbl_unitsFastSpeed.place(x=130, y=106, height=22, width=40)
         self._lbl_unitsFastSpeed.configure(background="#d9d9d9")
         self._lbl_unitsFastSpeed.configure(foreground="#000000")
         self._lbl_unitsFastSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -368,8 +348,7 @@ class Toplevel:
         self._lbl_unitsFastSpeed.configure(text='''mm/s''')
 
         self._lbl_unitsSlowSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_unitsSlowSpeed.place(relx=0.861, rely=0.532, height=22
-                , width=40, bordermode='ignore')
+        self._lbl_unitsSlowSpeed.place(x=310, y=106, height=22, width=40)
         self._lbl_unitsSlowSpeed.configure(background="#d9d9d9")
         self._lbl_unitsSlowSpeed.configure(foreground="#000000")
         self._lbl_unitsSlowSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -380,16 +359,13 @@ class Toplevel:
         self._lbl_unitsSlowSpeed.configure(text='''mm/s''')
 
         self.TSeparator1 = ttk.Separator(self.lf_PatternConfig)
-        self.TSeparator1.place(relx=-0.006, rely=0.404, relwidth=1.0
-                , bordermode='ignore')
+        self.TSeparator1.place(x=0, y=75, width=self.PATTERN_W+4, height=2)
 
         self.TSeparator2 = ttk.Separator(self.lf_PatternConfig)
-        self.TSeparator2.place(relx=-0.011, rely=0.753, relwidth=1.017
-                , bordermode='ignore')
+        self.TSeparator2.place(x=0, y=158, width=self.PATTERN_W+4, height=2)
 
         self.lf_MachineConfig = tk.LabelFrame(top)
-        self.lf_MachineConfig.place(relx=0.016, rely=0.6, relheight=0.313
-                , relwidth=0.581)
+        self.lf_MachineConfig.place(x=10, y=240, width=self.MACHINE_W, height=self.MACHINE_H)
         self.lf_MachineConfig.configure(relief='groove')
         self.lf_MachineConfig.configure(font="-family {Segoe UI} -size 10 -weight bold -slant roman -underline 0 -overstrike 0")
         self.lf_MachineConfig.configure(foreground="black")
@@ -399,8 +375,7 @@ class Toplevel:
         self.lf_MachineConfig.configure(highlightcolor="black")
 
         self._lbl_Kinematics = ttk.Label(self.lf_MachineConfig)
-        self._lbl_Kinematics.place(relx=0.014, rely=0.2, height=22, width=70
-                , bordermode='ignore')
+        self._lbl_Kinematics.place(x=5, y=5, height=22, width=70)
         self._lbl_Kinematics.configure(background="#d9d9d9")
         self._lbl_Kinematics.configure(foreground="#000000")
         self._lbl_Kinematics.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -411,8 +386,7 @@ class Toplevel:
         self._lbl_Kinematics.configure(text='''Kinematics''')
 
         self.cmb_Kinematics = ttk.Combobox(self.lf_MachineConfig, state = ("readonly",))
-        self.cmb_Kinematics.place(relx=0.208, rely=0.2, relheight=0.2
-                , relwidth=0.286, bordermode='ignore')
+        self.cmb_Kinematics.place(x=75, y=5, height=25, width=103)
         # self.cmb_Kinematics_value_list = ['Cartesian','Delta',]
         # self.cmb_Kinematics.configure(values=self.cmb_Kinematics_value_list)
         self.cmb_Kinematics.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -421,8 +395,7 @@ class Toplevel:
         self.cmb_Kinematics.configure(textvariable = self.cmb_Kinematics_var)
 
         self._lbl_Firmware = ttk.Label(self.lf_MachineConfig)
-        self._lbl_Firmware.place(relx=0.528, rely=0.2, height=22, width=60
-                , bordermode='ignore')
+        self._lbl_Firmware.place(x=190, y=5, height=22, width=60)
         self._lbl_Firmware.configure(background="#d9d9d9")
         self._lbl_Firmware.configure(foreground="#000000")
         self._lbl_Firmware.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -433,8 +406,7 @@ class Toplevel:
         self._lbl_Firmware.configure(text='''Firmware''')
 
         self.cmb_Firmware = ttk.Combobox(self.lf_MachineConfig, state = ("readonly",))
-        self.cmb_Firmware.place(relx=0.694, rely=0.2, relheight=0.2
-                , relwidth=0.286, bordermode='ignore')
+        self.cmb_Firmware.place(x=250, y=5, height=25, width=103)
         # self.cmb_Firmware_value_list = ['Marlin/Lerdge','Klipper','RepRapFirmware',]
         # self.cmb_Firmware.configure(values=self.cmb_Firmware_value_list)
         self.cmb_Firmware.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -443,8 +415,7 @@ class Toplevel:
         self.cmb_Firmware.configure(textvariable = self.cmb_Firmware_var)
 
         self._lbl_BuildVol = ttk.Label(self.lf_MachineConfig)
-        self._lbl_BuildVol.place(relx=0.014, rely=0.48, height=22, width=90
-                , bordermode='ignore')
+        self._lbl_BuildVol.place(x=5, y=40, height=22, width=90)
         self._lbl_BuildVol.configure(background="#d9d9d9")
         self._lbl_BuildVol.configure(foreground="#000000")
         self._lbl_BuildVol.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -455,24 +426,21 @@ class Toplevel:
         self._lbl_BuildVol.configure(text='''Build volume:''')
 
         self.ent_BuildVolY = ttk.Entry(self.lf_MachineConfig)
-        self.ent_BuildVolY.place(relx=0.444, rely=0.48, relheight=0.16
-                , relwidth=0.153, bordermode='ignore')
+        self.ent_BuildVolY.place(x=160, y=40, height=20, width=55)
         self.ent_BuildVolY.configure(takefocus="")
         # self.ent_BuildVolY.configure(cursor="ibeam")
         self.ent_BuildVolY_var = tk.StringVar()
         self.ent_BuildVolY.configure(textvariable = self.ent_BuildVolY_var)
 
         self.ent_BuildVolX = ttk.Entry(self.lf_MachineConfig)
-        self.ent_BuildVolX.place(relx=0.25, rely=0.48, relheight=0.16
-                , relwidth=0.153, bordermode='ignore')
+        self.ent_BuildVolX.place(x=90, y=40, height=20, width=55)
         self.ent_BuildVolX.configure(takefocus="")
         # self.ent_BuildVolX.configure(cursor="ibeam")
         self.ent_BuildVolX_var = tk.StringVar()
         self.ent_BuildVolX.configure(textvariable = self.ent_BuildVolX_var)
 
         self._lbl_bvx1 = ttk.Label(self.lf_MachineConfig)
-        self._lbl_bvx1.place(relx=0.408, rely=0.48, height=22, width=10
-                , bordermode='ignore')
+        self._lbl_bvx1.place(x=147, y=40, height=22, width=10)
         self._lbl_bvx1.configure(background="#d9d9d9")
         self._lbl_bvx1.configure(foreground="#000000")
         self._lbl_bvx1.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -483,8 +451,7 @@ class Toplevel:
         self._lbl_bvx1.configure(text='''x''')
 
         self.lbl_bvx2_units = ttk.Label(self.lf_MachineConfig)
-        self.lbl_bvx2_units.place(relx=0.603, rely=0.44, height=30, width=120
-                , bordermode='ignore')
+        self.lbl_bvx2_units.place(x=217, y=35, height=30, width=120)
         self.lbl_bvx2_units.configure(background="#d9d9d9")
         self.lbl_bvx2_units.configure(foreground="#000000")
         self.lbl_bvx2_units.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -495,8 +462,7 @@ class Toplevel:
         self.lbl_bvx2_units.configure(text='''x''')
 
         self.lbl_bvx3_units = ttk.Label(self.lf_MachineConfig)
-        self.lbl_bvx3_units.place(relx=0.806, rely=0.48, height=22, width=30
-                , bordermode='ignore')
+        self.lbl_bvx3_units.place(x=290, y=40, height=22, width=30)
         self.lbl_bvx3_units.configure(background="#d9d9d9")
         self.lbl_bvx3_units.configure(foreground="#000000")
         self.lbl_bvx3_units.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -507,8 +473,7 @@ class Toplevel:
         self.lbl_bvx3_units.configure(text='''mm''')
 
         self.cmb_AutolevelingType = ttk.Combobox(self.lf_MachineConfig, state = ("readonly",))
-        self.cmb_AutolevelingType.place(relx=0.778, rely=0.72, relheight=0.2
-                , relwidth=0.203, bordermode='ignore')
+        self.cmb_AutolevelingType.place(x=280, y=70, height=25, width=73)
         # self.cmb_AutolevelingType_value_list = ['G29','M83',]
         # self.cmb_AutolevelingType.configure(values=self.cmb_AutolevelingType_value_list)
         self.cmb_AutolevelingType.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -518,8 +483,7 @@ class Toplevel:
 
 
         self._lbl_AutolevelingType = ttk.Label(self.lf_MachineConfig)
-        self._lbl_AutolevelingType.place(relx=0.472, rely=0.72, height=22
-                , width=105, bordermode='ignore')
+        self._lbl_AutolevelingType.place(x=170, y=70, height=22, width=105)
         self._lbl_AutolevelingType.configure(background="#d9d9d9")
         self._lbl_AutolevelingType.configure(foreground="#000000")
         self._lbl_AutolevelingType.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -530,8 +494,7 @@ class Toplevel:
         self._lbl_AutolevelingType.configure(text='''Autoleveling type''')
 
         self.chk_UseAutoleveling = tk.Checkbutton(self.lf_MachineConfig)
-        self.chk_UseAutoleveling.place(relx=0.014, rely=0.72, relheight=0.176
-                , relwidth=0.333, bordermode='ignore')
+        self.chk_UseAutoleveling.place(x=5, y=70, height=22, width=120)
         self.chk_UseAutoleveling.configure(activebackground="#ececec")
         self.chk_UseAutoleveling.configure(activeforeground="#000000")
         self.chk_UseAutoleveling.configure(background="#d9d9d9")
@@ -547,16 +510,14 @@ class Toplevel:
         self.chk_UseAutoleveling.configure(variable=self.chk_UseAutoleveling_var)
 
         self.ent_BuildVolZ = ttk.Entry(self.lf_MachineConfig)
-        self.ent_BuildVolZ.place(relx=0.636, rely=0.48, relheight=0.16
-                , relwidth=0.153, bordermode='ignore')
+        self.ent_BuildVolZ.place(x=229, y=40, height=20, width=55)
         self.ent_BuildVolZ.configure(takefocus="")
         # self.ent_BuildVolZ.configure(cursor="ibeam")
         self.ent_BuildVolZ_var = tk.StringVar()
         self.ent_BuildVolZ.configure(textvariable = self.ent_BuildVolZ_var)
 
         self.lf_PrintConfig = tk.LabelFrame(top)
-        self.lf_PrintConfig.place(relx=0.613, rely=0.001, relheight=0.847
-                , relwidth=0.371)
+        self.lf_PrintConfig.place(x=380, y=0, width=self.PRINT_W, height=self.PRINT_H)
         self.lf_PrintConfig.configure(relief='groove')
         self.lf_PrintConfig.configure(font="-family {Segoe UI} -size 10 -weight bold -slant roman -underline 0 -overstrike 0")
         self.lf_PrintConfig.configure(foreground="black")
@@ -566,8 +527,7 @@ class Toplevel:
         self.lf_PrintConfig.configure(highlightcolor="black")
 
         self._lbl_NozzleTemp = ttk.Label(self.lf_PrintConfig)
-        self._lbl_NozzleTemp.place(relx=0.022, rely=0.059, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_NozzleTemp.place(x=5, y=0, height=22, width=120)
         self._lbl_NozzleTemp.configure(background="#d9d9d9")
         self._lbl_NozzleTemp.configure(foreground="#000000")
         self._lbl_NozzleTemp.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -578,8 +538,7 @@ class Toplevel:
         self._lbl_NozzleTemp.configure(text='''Nozzle temperature''')
 
         self._lbl_BedTemp = ttk.Label(self.lf_PrintConfig)
-        self._lbl_BedTemp.place(relx=0.022, rely=0.133, height=22, width=105
-                , bordermode='ignore')
+        self._lbl_BedTemp.place(x=5, y=25, height=22, width=105)
         self._lbl_BedTemp.configure(background="#d9d9d9")
         self._lbl_BedTemp.configure(foreground="#000000")
         self._lbl_BedTemp.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -590,24 +549,21 @@ class Toplevel:
         self._lbl_BedTemp.configure(text='''Bed temperature''')
 
         self.ent_NozzleTemp = ttk.Entry(self.lf_PrintConfig)
-        self.ent_NozzleTemp.place(relx=0.565, rely=0.059, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_NozzleTemp.place(x=130, y=0, height=20, width=55)
         self.ent_NozzleTemp.configure(takefocus="")
         # self.ent_NozzleTemp.configure(cursor="ibeam")
         self.ent_NozzleTemp_var = tk.StringVar()
         self.ent_NozzleTemp.configure(textvariable = self.ent_NozzleTemp_var)
 
         self.ent_BedTemp = ttk.Entry(self.lf_PrintConfig)
-        self.ent_BedTemp.place(relx=0.565, rely=0.133, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_BedTemp.place(x=130, y=25, height=20, width=55)
         self.ent_BedTemp.configure(takefocus="")
         # self.ent_BedTemp.configure(cursor="ibeam")
         self.ent_BedTemp_var = tk.StringVar()
         self.ent_BedTemp.configure(textvariable = self.ent_BedTemp_var)
 
         self.chk_RetractAtLayerChange = tk.Checkbutton(self.lf_PrintConfig)
-        self.chk_RetractAtLayerChange.place(relx=0.022, rely=0.442
-                , relheight=0.065, relwidth=0.674, bordermode='ignore')
+        self.chk_RetractAtLayerChange.place(x=5, y=130, height=22, width=155)
         self.chk_RetractAtLayerChange.configure(activebackground="#ececec")
         self.chk_RetractAtLayerChange.configure(activeforeground="#000000")
         self.chk_RetractAtLayerChange.configure(background="#d9d9d9")
@@ -623,8 +579,7 @@ class Toplevel:
         self.chk_RetractAtLayerChange.configure(variable=self.chk_RetractAtLayerChange_var)
 
         self._lbl_RetractSpeed = ttk.Label(self.lf_PrintConfig)
-        self._lbl_RetractSpeed.place(relx=0.022, rely=0.369, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_RetractSpeed.place(x=5, y=105, height=22, width=120)
         self._lbl_RetractSpeed.configure(background="#d9d9d9")
         self._lbl_RetractSpeed.configure(foreground="#000000")
         self._lbl_RetractSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -635,8 +590,7 @@ class Toplevel:
         self._lbl_RetractSpeed.configure(text='''Retraction speed''')
 
         self._lbl_RetractDist = ttk.Label(self.lf_PrintConfig)
-        self._lbl_RetractDist.place(relx=0.022, rely=0.295, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_RetractDist.place(x=5, y=80, height=22, width=120)
         self._lbl_RetractDist.configure(background="#d9d9d9")
         self._lbl_RetractDist.configure(foreground="#000000")
         self._lbl_RetractDist.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -647,24 +601,21 @@ class Toplevel:
         self._lbl_RetractDist.configure(text='''Retraction distance''')
 
         self.ent_RetractDist = ttk.Entry(self.lf_PrintConfig)
-        self.ent_RetractDist.place(relx=0.565, rely=0.295, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_RetractDist.place(x=130, y=80, height=20, width=55)
         self.ent_RetractDist.configure(takefocus="")
         # self.ent_RetractDist.configure(cursor="ibeam")
         self.ent_RetractDist_var = tk.StringVar()
         self.ent_RetractDist.configure(textvariable = self.ent_RetractDist_var)
 
         self.ent_RetractSpeed = ttk.Entry(self.lf_PrintConfig)
-        self.ent_RetractSpeed.place(relx=0.565, rely=0.369, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_RetractSpeed.place(x=130, y=105, height=20, width=55)
         self.ent_RetractSpeed.configure(takefocus="")
         # self.ent_RetractSpeed.configure(cursor="ibeam")
         self.ent_RetractSpeed_var = tk.StringVar()
         self.ent_RetractSpeed.configure(textvariable = self.ent_RetractSpeed_var)
 
         self._lbl_unitsRetractDist = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsRetractDist.place(relx=0.804, rely=0.295, height=22
-                , width=30, bordermode='ignore')
+        self._lbl_unitsRetractDist.place(x=185, y=80, height=22, width=30)
         self._lbl_unitsRetractDist.configure(background="#d9d9d9")
         self._lbl_unitsRetractDist.configure(foreground="#000000")
         self._lbl_unitsRetractDist.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -675,8 +626,7 @@ class Toplevel:
         self._lbl_unitsRetractDist.configure(text='''mm''')
 
         self._lbl_unitsRetractSpeed = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsRetractSpeed.place(relx=0.804, rely=0.369, height=22
-                , width=40, bordermode='ignore')
+        self._lbl_unitsRetractSpeed.place(x=185, y=105, height=22, width=40)
         self._lbl_unitsRetractSpeed.configure(background="#d9d9d9")
         self._lbl_unitsRetractSpeed.configure(foreground="#000000")
         self._lbl_unitsRetractSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -687,8 +637,7 @@ class Toplevel:
         self._lbl_unitsRetractSpeed.configure(text='''mm/s''')
 
         self._lbl_unitsNozzleTemp = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsNozzleTemp.place(relx=0.804, rely=0.059, height=22
-                , width=20, bordermode='ignore')
+        self._lbl_unitsNozzleTemp.place(x=185, y=0, height=22, width=20)
         self._lbl_unitsNozzleTemp.configure(background="#d9d9d9")
         self._lbl_unitsNozzleTemp.configure(foreground="#000000")
         self._lbl_unitsNozzleTemp.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -699,8 +648,7 @@ class Toplevel:
         self._lbl_unitsNozzleTemp.configure(text='''°C''')
 
         self._lbl_unitsBedTemp = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsBedTemp.place(relx=0.804, rely=0.133, height=22, width=20
-                , bordermode='ignore')
+        self._lbl_unitsBedTemp.place(x=185, y=25, height=22, width=20)
         self._lbl_unitsBedTemp.configure(background="#d9d9d9")
         self._lbl_unitsBedTemp.configure(foreground="#000000")
         self._lbl_unitsBedTemp.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -711,8 +659,7 @@ class Toplevel:
         self._lbl_unitsBedTemp.configure(text='''°C''')
 
         self._lbl_Cooling = ttk.Label(self.lf_PrintConfig)
-        self._lbl_Cooling.place(relx=0.022, rely=0.206, height=22, width=50
-                , bordermode='ignore')
+        self._lbl_Cooling.place(x=5, y=50, height=22, width=50)
         self._lbl_Cooling.configure(background="#d9d9d9")
         self._lbl_Cooling.configure(foreground="#000000")
         self._lbl_Cooling.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -723,8 +670,7 @@ class Toplevel:
         self._lbl_Cooling.configure(text='''Cooling''')
 
         self.lbl_CoolingPerc = ttk.Label(self.lf_PrintConfig)
-        self.lbl_CoolingPerc.place(relx=0.804, rely=0.206, height=22, width=40
-                , bordermode='ignore')
+        self.lbl_CoolingPerc.place(x=185, y=50, height=22, width=40)
         self.lbl_CoolingPerc.configure(background="#d9d9d9")
         self.lbl_CoolingPerc.configure(foreground="#000000")
         self.lbl_CoolingPerc.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -735,16 +681,13 @@ class Toplevel:
         self.lbl_CoolingPerc.configure(text='''50%''')
 
         self.TSeparator3 = ttk.Separator(self.lf_PrintConfig)
-        self.TSeparator3.place(relx=-0.039, rely=0.28, relwidth=1.048
-                , bordermode='ignore')
+        self.TSeparator3.place(x=0, y=75, width=self.PRINT_W+4, height=2)
 
         self.TSeparator4 = ttk.Separator(self.lf_PrintConfig)
-        self.TSeparator4.place(relx=-0.017, rely=0.522, relwidth=1.013
-                , bordermode='ignore')
+        self.TSeparator4.place(x=0, y=157, width=self.PRINT_W+4, height=2)
 
         self._lbl_FirstLayerSpeed = ttk.Label(self.lf_PrintConfig)
-        self._lbl_FirstLayerSpeed.place(relx=0.022, rely=0.546, height=22
-                , width=120, bordermode='ignore')
+        self._lbl_FirstLayerSpeed.place(x=5, y=165, height=22, width=120)
         self._lbl_FirstLayerSpeed.configure(background="#d9d9d9")
         self._lbl_FirstLayerSpeed.configure(foreground="#000000")
         self._lbl_FirstLayerSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -755,8 +698,7 @@ class Toplevel:
         self._lbl_FirstLayerSpeed.configure(text='''First layer speed''')
 
         self._lbl_TravelSpeed = ttk.Label(self.lf_PrintConfig)
-        self._lbl_TravelSpeed.place(relx=0.022, rely=0.619, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_TravelSpeed.place(x=5, y=190, height=22, width=120)
         self._lbl_TravelSpeed.configure(background="#d9d9d9")
         self._lbl_TravelSpeed.configure(foreground="#000000")
         self._lbl_TravelSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -767,8 +709,7 @@ class Toplevel:
         self._lbl_TravelSpeed.configure(text='''Travel speed''')
 
         self._lbl_LineWidth = ttk.Label(self.lf_PrintConfig)
-        self._lbl_LineWidth.place(relx=0.022, rely=0.708, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_LineWidth.place(x=5, y=220, height=22, width=120)
         self._lbl_LineWidth.configure(background="#d9d9d9")
         self._lbl_LineWidth.configure(foreground="#000000")
         self._lbl_LineWidth.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -779,8 +720,7 @@ class Toplevel:
         self._lbl_LineWidth.configure(text='''Line width''')
 
         self._lbl_LayerHeight = ttk.Label(self.lf_PrintConfig)
-        self._lbl_LayerHeight.place(relx=0.022, rely=0.782, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_LayerHeight.place(x=5, y=245, height=22, width=120)
         self._lbl_LayerHeight.configure(background="#d9d9d9")
         self._lbl_LayerHeight.configure(foreground="#000000")
         self._lbl_LayerHeight.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -791,8 +731,7 @@ class Toplevel:
         self._lbl_LayerHeight.configure(text='''Layer height''')
 
         self._lbl_FilamentDia = ttk.Label(self.lf_PrintConfig)
-        self._lbl_FilamentDia.place(relx=0.022, rely=0.855, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_FilamentDia.place(x=5, y=270, height=22, width=120)
         self._lbl_FilamentDia.configure(background="#d9d9d9")
         self._lbl_FilamentDia.configure(foreground="#000000")
         self._lbl_FilamentDia.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -803,52 +742,45 @@ class Toplevel:
         self._lbl_FilamentDia.configure(text='''Filament diameter''')
 
         self.ent_FirstLayerSpeed = ttk.Entry(self.lf_PrintConfig)
-        self.ent_FirstLayerSpeed.place(relx=0.565, rely=0.546, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_FirstLayerSpeed.place(x=130, y=165, height=20, width=55)
         self.ent_FirstLayerSpeed.configure(takefocus="")
         # self.ent_FirstLayerSpeed.configure(cursor="ibeam")
         self.ent_FirstLayerSpeed_var = tk.StringVar()
         self.ent_FirstLayerSpeed.configure(textvariable = self.ent_FirstLayerSpeed_var)
 
         self.ent_TravelSpeed = ttk.Entry(self.lf_PrintConfig)
-        self.ent_TravelSpeed.place(relx=0.565, rely=0.619, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_TravelSpeed.place(x=130, y=190, height=20, width=55)
         self.ent_TravelSpeed.configure(takefocus="")
         # self.ent_TravelSpeed.configure(cursor="ibeam")
         self.ent_TravelSpeed_var = tk.StringVar()
         self.ent_TravelSpeed.configure(textvariable = self.ent_TravelSpeed_var)
 
         self.TSeparator5 = ttk.Separator(self.lf_PrintConfig)
-        self.TSeparator5.place(relx=-0.009, rely=0.693, relwidth=1.039
-                , bordermode='ignore')
+        self.TSeparator5.place(x=0, y=215, width=self.PRINT_W+4, height=2)
 
         self.ent_LineWidth = ttk.Entry(self.lf_PrintConfig)
-        self.ent_LineWidth.place(relx=0.565, rely=0.708, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_LineWidth.place(x=130, y=220, height=20, width=55)
         self.ent_LineWidth.configure(takefocus="")
         # self.ent_LineWidth.configure(cursor="ibeam")
         self.ent_LineWidth_var = tk.StringVar()
         self.ent_LineWidth.configure(textvariable = self.ent_LineWidth_var)
 
         self.ent_LayerHeight = ttk.Entry(self.lf_PrintConfig)
-        self.ent_LayerHeight.place(relx=0.565, rely=0.782, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_LayerHeight.place(x=130, y=245, height=20, width=55)
         self.ent_LayerHeight.configure(takefocus="")
         # self.ent_LayerHeight.configure(cursor="ibeam")
         self.ent_LayerHeight_var = tk.StringVar()
         self.ent_LayerHeight.configure(textvariable = self.ent_LayerHeight_var)
 
         self.ent_FilamentDia = ttk.Entry(self.lf_PrintConfig)
-        self.ent_FilamentDia.place(relx=0.565, rely=0.855, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_FilamentDia.place(x=130, y=270, height=20, width=55)
         self.ent_FilamentDia.configure(takefocus="")
         # self.ent_FilamentDia.configure(cursor="ibeam")
         self.ent_FilamentDia_var = tk.StringVar()
         self.ent_FilamentDia.configure(textvariable = self.ent_FilamentDia_var)
 
         self._lbl_unitsLineWidth = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsLineWidth.place(relx=0.804, rely=0.708, height=22
-                , width=30, bordermode='ignore')
+        self._lbl_unitsLineWidth.place(x=185, y=220, height=22, width=30)
         self._lbl_unitsLineWidth.configure(background="#d9d9d9")
         self._lbl_unitsLineWidth.configure(foreground="#000000")
         self._lbl_unitsLineWidth.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -859,8 +791,7 @@ class Toplevel:
         self._lbl_unitsLineWidth.configure(text='''mm''')
 
         self._lbl_unitsLayerHeight = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsLayerHeight.place(relx=0.804, rely=0.782, height=22
-                , width=30, bordermode='ignore')
+        self._lbl_unitsLayerHeight.place(x=185, y=245, height=22, width=30)
         self._lbl_unitsLayerHeight.configure(background="#d9d9d9")
         self._lbl_unitsLayerHeight.configure(foreground="#000000")
         self._lbl_unitsLayerHeight.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -871,8 +802,7 @@ class Toplevel:
         self._lbl_unitsLayerHeight.configure(text='''mm''')
 
         self._lbl_unitsFilamentDia = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsFilamentDia.place(relx=0.804, rely=0.855, height=22
-                , width=30, bordermode='ignore')
+        self._lbl_unitsFilamentDia.place(x=185, y=270, height=22, width=30)
         self._lbl_unitsFilamentDia.configure(background="#d9d9d9")
         self._lbl_unitsFilamentDia.configure(foreground="#000000")
         self._lbl_unitsFilamentDia.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -883,8 +813,7 @@ class Toplevel:
         self._lbl_unitsFilamentDia.configure(text='''mm''')
 
         self._lbl_unitsFirstLayerSpeed = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsFirstLayerSpeed.place(relx=0.804, rely=0.546, height=22
-                , width=40, bordermode='ignore')
+        self._lbl_unitsFirstLayerSpeed.place(x=185, y=165, height=22, width=40)
         self._lbl_unitsFirstLayerSpeed.configure(background="#d9d9d9")
         self._lbl_unitsFirstLayerSpeed.configure(foreground="#000000")
         self._lbl_unitsFirstLayerSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -895,8 +824,7 @@ class Toplevel:
         self._lbl_unitsFirstLayerSpeed.configure(text='''mm/s''')
 
         self._lbl_unitsTravelSpeed = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsTravelSpeed.place(relx=0.804, rely=0.619, height=22
-                , width=40, bordermode='ignore')
+        self._lbl_unitsTravelSpeed.place(x=185, y=190, height=22, width=40)
         self._lbl_unitsTravelSpeed.configure(background="#d9d9d9")
         self._lbl_unitsTravelSpeed.configure(foreground="#000000")
         self._lbl_unitsTravelSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -907,8 +835,7 @@ class Toplevel:
         self._lbl_unitsTravelSpeed.configure(text='''mm/s''')
 
         self.scl_CoolingPerc = ttk.Scale(self.lf_PrintConfig, from_=0, to=20)
-        self.scl_CoolingPerc.place(relx=0.261, rely=0.215, relwidth=0.522
-                , relheight=0.0, height=20, bordermode='ignore')
+        self.scl_CoolingPerc.place(x=60, y=53, width=120, height=20)
         self.scl_CoolingPerc.configure(value="10")
         self.scl_CoolingPerc.configure(length="20")
         self.scl_CoolingPerc.configure(takefocus="")
@@ -916,8 +843,7 @@ class Toplevel:
         self.scl_CoolingPerc.configure(variable = self.scl_CoolingPerc_var)
 
         self._lbl_Zoffset = ttk.Label(self.lf_PrintConfig)
-        self._lbl_Zoffset.place(relx=0.022, rely=0.926, height=22, width=120
-                , bordermode='ignore')
+        self._lbl_Zoffset.place(x=5, y=294, height=22, width=120)
         self._lbl_Zoffset.configure(background="#d9d9d9")
         self._lbl_Zoffset.configure(foreground="#000000")
         self._lbl_Zoffset.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -928,8 +854,7 @@ class Toplevel:
         self._lbl_Zoffset.configure(text='''Z offset''')
 
         self._lbl_unitsZoffset = ttk.Label(self.lf_PrintConfig)
-        self._lbl_unitsZoffset.place(relx=0.804, rely=0.926, height=22, width=30
-                , bordermode='ignore')
+        self._lbl_unitsZoffset.place(x=185, y=294, height=22, width=30)
         self._lbl_unitsZoffset.configure(background="#d9d9d9")
         self._lbl_unitsZoffset.configure(foreground="#000000")
         self._lbl_unitsZoffset.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -940,26 +865,24 @@ class Toplevel:
         self._lbl_unitsZoffset.configure(text='''mm''')
 
         self.ent_Zoffset = ttk.Entry(self.lf_PrintConfig)
-        self.ent_Zoffset.place(relx=0.565, rely=0.929, relheight=0.059
-                , relwidth=0.239, bordermode='ignore')
+        self.ent_Zoffset.place(x=130, y=295, height=20, width=55)
         self.ent_Zoffset.configure(takefocus="")
         # self.ent_Zoffset.configure(cursor="ibeam")
         self.ent_Zoffset_var = tk.StringVar()
         self.ent_Zoffset.configure(textvariable = self.ent_Zoffset_var)
 
         self.btn_SaveConfig = ttk.Button(top)
-        self.btn_SaveConfig.place(relx=0.605, rely=0.852, height=25, width=116)
+        self.btn_SaveConfig.place(x=375, y=341, height=25, width=116)
         self.btn_SaveConfig.configure(takefocus="")
         self.btn_SaveConfig.configure(text='''Save configuration''')
 
         self.btn_Generate = ttk.Button(top)
-        self.btn_Generate.place(relx=0.798, rely=0.852, height=25, width=116)
+        self.btn_Generate.place(x=495, y=341, height=25, width=116)
         self.btn_Generate.configure(takefocus="")
         self.btn_Generate.configure(text='''Generate G-code''')
 
         self._lbl_Kcalc1 = ttk.Label(top)
-        self._lbl_Kcalc1.place(relx=0.016, rely=0.925, height=22
-                , width=250, bordermode='ignore')
+        self._lbl_Kcalc1.place(x=10, y=370, height=22, width=250)
         self._lbl_Kcalc1.configure(background="#d9d9d9")
         self._lbl_Kcalc1.configure(foreground="#000000")
         self._lbl_Kcalc1.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -970,8 +893,7 @@ class Toplevel:
         self._lbl_Kcalc1.configure(text='''Height with the best quality:              mm''')
 
         self.ent_Hmeasured = ttk.Entry(top)
-        self.ent_Hmeasured.place(relx=0.283, rely=0.925, height=22
-                , width=50, bordermode='ignore')
+        self.ent_Hmeasured.place(x=175, y=370, height=22, width=50)
         self.ent_Hmeasured.configure(takefocus="")
         self.ent_Hmeasured_var = tk.StringVar()
         # self.ent_Hmeasured_var.set("2.5")
@@ -979,8 +901,7 @@ class Toplevel:
         self.ent_Hmeasured.configure(validate = "key", validatecommand = (self.ent_Hmeasured.register(validate), "%P"))
 
         self.lbl_K = ttk.Label(top)
-        self.lbl_K.place(relx=0.605, rely=0.925, height=22
-                , width=250, bordermode='ignore')
+        self.lbl_K.place(x=375, y=370, height=22, width=250)
         self.lbl_K.configure(background="#d9d9d9")
         self.lbl_K.configure(foreground="#007c00")
         self.lbl_K.configure(font="-family {Segoe UI} -size 10 -weight bold -slant roman -underline 0 -overstrike 0")
