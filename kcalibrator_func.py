@@ -84,6 +84,23 @@ def M900(k, fw = 'Marlin'):
     elif fw=='RepRapFirmware': return "M572 D0 S{kf:.3f}\n".format(kf=k)
     else: return "M900 K{kf:.3f}\nM117 K={kf:.3f}\n".format(kf=k)
 
+def set_accel(a, fw='Marlin'):
+    """Set acceleration (Klipper: SET_VELOCITY_LIMIT ACCEL=)"""
+    if fw == 'Klipper':
+        return "SET_VELOCITY_LIMIT ACCEL={a:.0f}\n".format(a=a)
+    return ""
+
+def arange(start, stop, step):
+    """Float range for A values"""
+    vals = []
+    if step <= 0:
+        return vals
+    v = start
+    while (v <= stop if start <= stop else v >= stop):
+        vals.append(v)
+        v += step if stop >= start else -step
+    return vals
+
 def ABL(use, ABL_cmd = "G29"):
     if not use: return ""
     else: return ABL_cmd+"\n"
@@ -174,13 +191,24 @@ G0 X0 Y0 F{F_t}""".format(retr = "" if currentConfig.retract_at_layer_change els
     if currentConfig.double_perimeter:
         size2 = (currentConfig.size[0]+2*currentConfig.def_line_width, currentConfig.size[1]+2*currentConfig.def_line_width)
         corners2 = rectangle(bed_center[0],bed_center[1], size2[0], size2[1])
-    for k in frange(currentConfig.k_start, currentConfig.k_end+currentConfig.k_step, currentConfig.k_step if currentConfig.k_start < currentConfig.k_end+currentConfig.k_step else -currentConfig.k_step):
-        gcode.append(M900(k, currentConfig.firmware))
-        for i in range(currentConfig.layers_per_k):
-            current_z+=currentConfig.def_layer
-            layer = []
-            ex.e = 0
-            layer.extend([G0((bed_center[0], bed_center[1]+currentConfig.size[1]/2, current_z), currentConfig.def_speed_travel),
+
+    a_adaptive = getattr(currentConfig, 'a_adaptive', False) and currentConfig.firmware == 'Klipper'
+    a_values = arange(
+        getattr(currentConfig, 'a_start', 500),
+        getattr(currentConfig, 'a_end', 2000),
+        getattr(currentConfig, 'a_step', 200)
+    ) if a_adaptive else [None]
+
+    for a_val in a_values:
+        if a_adaptive and a_val is not None:
+            gcode.append(set_accel(a_val, currentConfig.firmware))
+        for k in frange(currentConfig.k_start, currentConfig.k_end+currentConfig.k_step, currentConfig.k_step if currentConfig.k_start < currentConfig.k_end+currentConfig.k_step else -currentConfig.k_step):
+            gcode.append(M900(k, currentConfig.firmware))
+            for i in range(currentConfig.layers_per_k):
+                current_z+=currentConfig.def_layer
+                layer = []
+                ex.e = 0
+                layer.extend([G0((bed_center[0], bed_center[1]+currentConfig.size[1]/2, current_z), currentConfig.def_speed_travel),
                         "G1 E0 F{S}\n".format(S=currentConfig.retract[1]*60) if currentConfig.retract_at_layer_change else "",
                         G1((corners[1][0]+currentConfig.size[0]*currentConfig.path_spd_fractions[0], corners[1][1], current_z), ex.extrude(abs(corners[1][0]+currentConfig.size[0]*currentConfig.path_spd_fractions[0]-bed_center[0])), currentConfig.speed_slow),
                         G1((corners[1][0], corners[1][1], current_z), ex.extrude(abs(currentConfig.size[0]*currentConfig.path_spd_fractions[2])), currentConfig.speed_fast),
@@ -195,11 +223,11 @@ G0 X0 Y0 F{F_t}""".format(retr = "" if currentConfig.retract_at_layer_change els
                         G1((bed_center[0]+currentConfig.def_line_width/2, bed_center[1]+currentConfig.size[1]/2, current_z), ex.extrude(abs(corners[1][0]+currentConfig.size[0]*currentConfig.path_spd_fractions[0]-bed_center[0])), currentConfig.speed_slow),
                         "G92 E0\n",
                         "G1 E-{R} F{S}\n".format(R=currentConfig.retract[0], S=currentConfig.retract[1]*60) if (currentConfig.retract_at_layer_change and not currentConfig.double_perimeter) else ""])
-            current_pos = (bed_center[0]+currentConfig.def_line_width/2, bed_center[1]+currentConfig.size[1]/2, current_z)
+                current_pos = (bed_center[0]+currentConfig.def_line_width/2, bed_center[1]+currentConfig.size[1]/2, current_z)
 
-            if currentConfig.double_perimeter:
-                ex.e = 0
-                layer.extend([G0((bed_center[0], bed_center[1]+size2[1]/2, current_z), currentConfig.def_speed_travel),
+                if currentConfig.double_perimeter:
+                    ex.e = 0
+                    layer.extend([G0((bed_center[0], bed_center[1]+size2[1]/2, current_z), currentConfig.def_speed_travel),
                             "G1 E0 F{S}\n".format(S=currentConfig.retract[1]*60) if (currentConfig.retract_at_layer_change and not currentConfig.double_perimeter) else "",
                             G1((corners2[1][0]+size2[0]*currentConfig.path_spd_fractions[0], corners2[1][1], current_z), ex.extrude(abs(corners2[1][0]+size2[0]*currentConfig.path_spd_fractions[0]-bed_center[0])), currentConfig.speed_slow),
                             G1((corners2[1][0], corners2[1][1], current_z), ex.extrude(abs(size2[0]*currentConfig.path_spd_fractions[2])), currentConfig.speed_fast),
@@ -214,8 +242,8 @@ G0 X0 Y0 F{F_t}""".format(retr = "" if currentConfig.retract_at_layer_change els
                             G1((bed_center[0]+currentConfig.def_line_width/2, bed_center[1]+size2[1]/2, current_z), ex.extrude(abs(corners[1][0]+size2[0]*currentConfig.path_spd_fractions[0]-bed_center[0])), currentConfig.speed_slow),
                             "G92 E0\n",
                             "G1 E-{R} F{S}\n".format(R=currentConfig.retract[0], S=currentConfig.retract[1]*60) if currentConfig.retract_at_layer_change else ""])
-                current_pos = (bed_center[0]+currentConfig.def_line_width/2, bed_center[1]+size2[1]/2, current_z)
-            gcode.extend(layer)
+                    current_pos = (bed_center[0]+currentConfig.def_line_width/2, bed_center[1]+size2[1]/2, current_z)
+                gcode.extend(layer)
 
     gcode.append(gcode_end)
     print('stopped creategcode')

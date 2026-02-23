@@ -83,13 +83,13 @@ class Toplevel:
             [('selected', _compcolor), ('active',_ana2color)])
 
         # Layout constants (window 620x400)
-        self.WIN_W, self.WIN_H = 620, 400
-        self.PATTERN_W, self.PATTERN_H = 360, 236
+        self.WIN_W, self.WIN_H = 620, 450
+        self.PATTERN_W, self.PATTERN_H = 360, 286
         self.MACHINE_W, self.MACHINE_H = 360, 125
         self.PRINT_W, self.PRINT_H = 230, 339
 
-        top.geometry("620x400+400+250")
-        top.minsize(620, 400)
+        top.geometry("620x450+400+250")
+        top.minsize(620, 450)
         top.maxsize(1920, 1080)
         top.resizable(1, 1)
         top.title("Kcalibrator")
@@ -168,7 +168,7 @@ class Toplevel:
         self._lbl_KBy.configure(text='''change by''')
 
         self._lbl_FastSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_FastSpeed.place(x=5, y=106, height=22, width=70)
+        self._lbl_FastSpeed.place(x=5, y=151, height=22, width=70)
         self._lbl_FastSpeed.configure(background="#d9d9d9")
         self._lbl_FastSpeed.configure(foreground="#000000")
         self._lbl_FastSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -179,14 +179,14 @@ class Toplevel:
         self._lbl_FastSpeed.configure(text='''Fast speed''')
 
         self.ent_FastSpeed = ttk.Entry(self.lf_PatternConfig)
-        self.ent_FastSpeed.place(x=77, y=106, height=20, width=50)
+        self.ent_FastSpeed.place(x=77, y=151, height=20, width=50)
         self.ent_FastSpeed.configure(takefocus="")
         # self.ent_FastSpeed.configure(cursor="ibeam")
         self.ent_FastSpeed_var = tk.StringVar()
         self.ent_FastSpeed.configure(textvariable = self.ent_FastSpeed_var)
 
         self._lbl_SlowSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_SlowSpeed.place(x=188, y=106, height=22, width=75)
+        self._lbl_SlowSpeed.place(x=188, y=151, height=22, width=75)
         self._lbl_SlowSpeed.configure(background="#d9d9d9")
         self._lbl_SlowSpeed.configure(foreground="#000000")
         self._lbl_SlowSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -197,7 +197,7 @@ class Toplevel:
         self._lbl_SlowSpeed.configure(text='''Slow speed''')
 
         self.ent_SlowSpeed = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SlowSpeed.place(x=260, y=106, height=20, width=50)
+        self.ent_SlowSpeed.place(x=260, y=151, height=20, width=50)
         self.ent_SlowSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
         self.ent_SlowSpeed.configure(takefocus="")
         # self.ent_SlowSpeed.configure(cursor="ibeam")
@@ -205,7 +205,7 @@ class Toplevel:
         self.ent_SlowSpeed.configure(textvariable = self.ent_SlowSpeed_var)
 
         self._lbl_Speeds = ttk.Label(self.lf_PatternConfig)
-        self._lbl_Speeds.place(x=5, y=81, height=22, width=325)
+        self._lbl_Speeds.place(x=5, y=126, height=22, width=325)
         self._lbl_Speeds.configure(background="#d9d9d9")
         self._lbl_Speeds.configure(foreground="#000000")
         self._lbl_Speeds.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -241,29 +241,76 @@ class Toplevel:
         self.ent_LayersPerK_var = tk.StringVar()
         self.ent_LayersPerK.configure(textvariable = self.ent_LayersPerK_var)
 
+        self.chk_AAdaptive = tk.Checkbutton(self.lf_PatternConfig)
+        self.chk_AAdaptive.place(x=0, y=72, height=20, width=200)
+        self.chk_AAdaptive.configure(activebackground="#ececec")
+        self.chk_AAdaptive.configure(activeforeground="#000000")
+        self.chk_AAdaptive.configure(background="#d9d9d9")
+        self.chk_AAdaptive.configure(borderwidth="0")
+        self.chk_AAdaptive.configure(disabledforeground="#a3a3a3")
+        self.chk_AAdaptive.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
+        self.chk_AAdaptive.configure(foreground="#000000")
+        self.chk_AAdaptive.configure(highlightbackground="#d9d9d9")
+        self.chk_AAdaptive.configure(highlightcolor="black")
+        self.chk_AAdaptive.configure(justify='left')
+        self.chk_AAdaptive.configure(text='''Adaptive Pressure Advance''')
+        self.chk_AAdaptive_var = tk.BooleanVar()
+        self.chk_AAdaptive.configure(variable=self.chk_AAdaptive_var)
+
+        self._lbl_AFrom = ttk.Label(self.lf_PatternConfig)
+        self._lbl_AFrom.place(x=5, y=94, height=20, width=60)
+        self._lbl_AFrom.configure(background="#d9d9d9")
+        self._lbl_AFrom.configure(foreground="#000000")
+        self._lbl_AFrom.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
+        self._lbl_AFrom.configure(text='''From A =''') 
+        self.ent_StartA = ttk.Entry(self.lf_PatternConfig)
+        self.ent_StartA.place(x=68, y=94, height=20, width=55)
+        self.ent_StartA_var = tk.StringVar()
+        self.ent_StartA.configure(textvariable=self.ent_StartA_var)
+        self._lbl_ATo = ttk.Label(self.lf_PatternConfig)
+        self._lbl_ATo.place(x=126, y=94, height=20, width=40)
+        self._lbl_ATo.configure(background="#d9d9d9")
+        self._lbl_ATo.configure(foreground="#000000")
+        self._lbl_ATo.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
+        self._lbl_ATo.configure(text='''to A =''')
+        self.ent_StopA = ttk.Entry(self.lf_PatternConfig)
+        self.ent_StopA.place(x=170, y=94, height=20, width=55)
+        self.ent_StopA_var = tk.StringVar()
+        self.ent_StopA.configure(textvariable=self.ent_StopA_var)
+        self._lbl_ABy = ttk.Label(self.lf_PatternConfig)
+        self._lbl_ABy.place(x=229, y=94, height=20, width=65)
+        self._lbl_ABy.configure(background="#d9d9d9")
+        self._lbl_ABy.configure(foreground="#000000")
+        self._lbl_ABy.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
+        self._lbl_ABy.configure(text='''change by''')
+        self.ent_StepA = ttk.Entry(self.lf_PatternConfig)
+        self.ent_StepA.place(x=299, y=94, height=20, width=55)
+        self.ent_StepA_var = tk.StringVar()
+        self.ent_StepA.configure(textvariable=self.ent_StepA_var)
+
         self.ent_SpdFr1 = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SpdFr1.place(x=172, y=131, height=20, width=50)
+        self.ent_SpdFr1.place(x=172, y=176, height=20, width=50)
         self.ent_SpdFr1.configure(takefocus="")
         # self.ent_SpdFr1.configure(cursor="ibeam")
         self.ent_SpdFr1_var = tk.StringVar()
         self.ent_SpdFr1.configure(textvariable = self.ent_SpdFr1_var)
 
         self.ent_SpdFr2 = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SpdFr2.place(x=238, y=131, height=20, width=50)
+        self.ent_SpdFr2.place(x=238, y=176, height=20, width=50)
         self.ent_SpdFr2.configure(takefocus="")
         # self.ent_SpdFr2.configure(cursor="ibeam")
         self.ent_SpdFr2_var = tk.StringVar()
         self.ent_SpdFr2.configure(textvariable = self.ent_SpdFr2_var)
 
         self.ent_SpdFr3 = ttk.Entry(self.lf_PatternConfig)
-        self.ent_SpdFr3.place(x=304, y=131, height=20, width=50)
+        self.ent_SpdFr3.place(x=304, y=176, height=20, width=50)
         self.ent_SpdFr3.configure(takefocus="")
         # self.ent_SpdFr3.configure(cursor="ibeam")
         self.ent_SpdFr3_var = tk.StringVar()
         self.ent_SpdFr3.configure(textvariable = self.ent_SpdFr3_var)
 
         self._lbl_SpeedFractions = ttk.Label(self.lf_PatternConfig)
-        self._lbl_SpeedFractions.place(x=5, y=131, height=22, width=160)
+        self._lbl_SpeedFractions.place(x=5, y=176, height=22, width=160)
         self._lbl_SpeedFractions.configure(background="#d9d9d9")
         self._lbl_SpeedFractions.configure(foreground="#000000")
         self._lbl_SpeedFractions.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -274,7 +321,7 @@ class Toplevel:
         self._lbl_SpeedFractions.configure(text='''Fractions for pattern paths''')
 
         self._lbl_PatternSize = ttk.Label(self.lf_PatternConfig)
-        self._lbl_PatternSize.place(x=5, y=166, height=22, width=160)
+        self._lbl_PatternSize.place(x=5, y=211, height=22, width=160)
         self._lbl_PatternSize.configure(background="#d9d9d9")
         self._lbl_PatternSize.configure(foreground="#000000")
         self._lbl_PatternSize.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -285,7 +332,7 @@ class Toplevel:
         self._lbl_PatternSize.configure(text='''Size of the pattern (XxYxZ):''')
 
         self._lbl_psx = ttk.Label(self.lf_PatternConfig)
-        self._lbl_psx.place(x=219, y=166, height=22, width=10)
+        self._lbl_psx.place(x=219, y=211, height=22, width=10)
         self._lbl_psx.configure(background="#d9d9d9")
         self._lbl_psx.configure(foreground="#000000")
         self._lbl_psx.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -296,21 +343,21 @@ class Toplevel:
         self._lbl_psx.configure(text='''x''')
 
         self.ent_PatternXsize = ttk.Entry(self.lf_PatternConfig)
-        self.ent_PatternXsize.place(x=167, y=166, height=20, width=50)
+        self.ent_PatternXsize.place(x=167, y=211, height=20, width=50)
         self.ent_PatternXsize.configure(takefocus="")
         # self.ent_PatternXsize.configure(cursor="ibeam")
         self.ent_PatternXsize_var = tk.StringVar()
         self.ent_PatternXsize.configure(textvariable = self.ent_PatternXsize_var)
 
         self.ent_PatternYsize = ttk.Entry(self.lf_PatternConfig)
-        self.ent_PatternYsize.place(x=231, y=166, height=20, width=50)
+        self.ent_PatternYsize.place(x=231, y=211, height=20, width=50)
         self.ent_PatternYsize.configure(takefocus="")
         # self.ent_PatternYsize.configure(cursor="ibeam")
         self.ent_PatternYsize_var = tk.StringVar()
         self.ent_PatternYsize.configure(textvariable = self.ent_PatternYsize_var)
 
         self.lbl_PatternZsize = ttk.Label(self.lf_PatternConfig)
-        self.lbl_PatternZsize.place(x=284, y=166, height=22, width=70)
+        self.lbl_PatternZsize.place(x=284, y=211, height=22, width=70)
         self.lbl_PatternZsize.configure(background="#d9d9d9")
         self.lbl_PatternZsize.configure(foreground="#000000")
         self.lbl_PatternZsize.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -321,7 +368,7 @@ class Toplevel:
         self.lbl_PatternZsize.configure(text='''x 100 mm''')
 
         self.chk_TwoPerimeters = tk.Checkbutton(self.lf_PatternConfig)
-        self.chk_TwoPerimeters.place(x=5, y=191, height=22, width=300)
+        self.chk_TwoPerimeters.place(x=5, y=236, height=22, width=300)
         self.chk_TwoPerimeters.configure(activebackground="#ececec")
         self.chk_TwoPerimeters.configure(activeforeground="#000000")
         self.chk_TwoPerimeters.configure(background="#d9d9d9")
@@ -337,7 +384,7 @@ class Toplevel:
         self.chk_TwoPerimeters.configure(variable=self.chk_TwoPerimeters_var)
 
         self._lbl_unitsFastSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_unitsFastSpeed.place(x=130, y=106, height=22, width=40)
+        self._lbl_unitsFastSpeed.place(x=130, y=151, height=22, width=40)
         self._lbl_unitsFastSpeed.configure(background="#d9d9d9")
         self._lbl_unitsFastSpeed.configure(foreground="#000000")
         self._lbl_unitsFastSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -348,7 +395,7 @@ class Toplevel:
         self._lbl_unitsFastSpeed.configure(text='''mm/s''')
 
         self._lbl_unitsSlowSpeed = ttk.Label(self.lf_PatternConfig)
-        self._lbl_unitsSlowSpeed.place(x=310, y=106, height=22, width=40)
+        self._lbl_unitsSlowSpeed.place(x=310, y=151, height=22, width=40)
         self._lbl_unitsSlowSpeed.configure(background="#d9d9d9")
         self._lbl_unitsSlowSpeed.configure(foreground="#000000")
         self._lbl_unitsSlowSpeed.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -359,13 +406,13 @@ class Toplevel:
         self._lbl_unitsSlowSpeed.configure(text='''mm/s''')
 
         self.TSeparator1 = ttk.Separator(self.lf_PatternConfig)
-        self.TSeparator1.place(x=0, y=75, width=self.PATTERN_W+4, height=2)
+        self.TSeparator1.place(x=0, y=120, width=self.PATTERN_W+4, height=2)
 
         self.TSeparator2 = ttk.Separator(self.lf_PatternConfig)
-        self.TSeparator2.place(x=0, y=158, width=self.PATTERN_W+4, height=2)
+        self.TSeparator2.place(x=0, y=203, width=self.PATTERN_W+4, height=2)
 
         self.lf_MachineConfig = tk.LabelFrame(top)
-        self.lf_MachineConfig.place(x=10, y=240, width=self.MACHINE_W, height=self.MACHINE_H)
+        self.lf_MachineConfig.place(x=10, y=290, width=self.MACHINE_W, height=self.MACHINE_H)
         self.lf_MachineConfig.configure(relief='groove')
         self.lf_MachineConfig.configure(font="-family {Segoe UI} -size 10 -weight bold -slant roman -underline 0 -overstrike 0")
         self.lf_MachineConfig.configure(foreground="black")
@@ -882,7 +929,7 @@ class Toplevel:
         self.btn_Generate.configure(text='''Generate G-code''')
 
         self._lbl_Kcalc1 = ttk.Label(top)
-        self._lbl_Kcalc1.place(x=10, y=370, height=22, width=250)
+        self._lbl_Kcalc1.place(x=10, y=420, height=22, width=250)
         self._lbl_Kcalc1.configure(background="#d9d9d9")
         self._lbl_Kcalc1.configure(foreground="#000000")
         self._lbl_Kcalc1.configure(font="-family {Segoe UI} -size 10 -weight normal -slant roman -underline 0 -overstrike 0")
@@ -893,7 +940,7 @@ class Toplevel:
         self._lbl_Kcalc1.configure(text='''Height with the best quality:              mm''')
 
         self.ent_Hmeasured = ttk.Entry(top)
-        self.ent_Hmeasured.place(x=175, y=370, height=22, width=50)
+        self.ent_Hmeasured.place(x=175, y=420, height=22, width=50)
         self.ent_Hmeasured.configure(takefocus="")
         self.ent_Hmeasured_var = tk.StringVar()
         # self.ent_Hmeasured_var.set("2.5")
@@ -937,6 +984,12 @@ class Toplevel:
         # self.scl_CoolingPerc.configure(command = self.handle_Cooling_scl)
         self.scl_CoolingPerc_var.trace_add('write', lambda name, index, mode: self.handle_Cooling_scl())
         self.cmb_Kinematics_var.trace_add('write', lambda name, index, mode: self.handle_Kinematics_cmb())
+        self.cmb_Firmware_var.trace_add('write', lambda name, index, mode: self.handle_Firmware_cmb())
+        self.chk_AAdaptive_var.trace_add('write', lambda name, index, mode: self.calculate_K())
+        self.chk_AAdaptive_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
+        self.ent_StartA_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
+        self.ent_StopA_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
+        self.ent_StepA_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
 
     def register_validator(self):
         for member in vars(self):
@@ -969,6 +1022,11 @@ class Toplevel:
         self.chk_RetractAtLayerChange_var.set(config.retract_at_layer_change)
         self.chk_TwoPerimeters_var.set(config.double_perimeter)
 
+        self.chk_AAdaptive_var.set(config.a_adaptive)
+        self.ent_StartA_var.set(str(config.a_start))
+        self.ent_StopA_var.set(str(config.a_end))
+        self.ent_StepA_var.set(str(config.a_step))
+
         self.chk_UseAutoleveling_var.set(config.use_ABL)
         self.cmb_AutolevelingType.configure(values=config.ABL_type_list)
         self.cmb_AutolevelingType.set(config.ABL_type)
@@ -978,6 +1036,7 @@ class Toplevel:
         self.cmb_Firmware.set(config.firmware)
         self.cmb_Kinematics.configure(values=config.kinematics_list)
         self.cmb_Kinematics.set(config.kinematics)
+        self.handle_Firmware_cmb()
 
         self.ent_FilamentDia_var.set(str(config.def_fil_dia))
         self.ent_LineWidth_var.set(str(config.def_line_width))
@@ -989,15 +1048,15 @@ class Toplevel:
 
     def pattern_height(self):
         try:
-             # stopk = float(self.ent_StopK.get()) if self.ent_StopK.get() else 0.0
-             # startk = float(self.ent_StartK.get()) if self.ent_StartK.get() else 0.0
-             # stepk = float(self.ent_StepK.get()) if self.ent_StepK.get() else 0.0
-             # k_values = abs(stopk - startk)/stepk
-             # layerk = int(self.ent_LayersPerK.get()) if self.ent_LayersPerK.get() else 0
-             # layerh = float(self.ent_LayerHeight.get()) if self.ent_LayerHeight.get() else 0
-             # height = k_values * layerh * layerk
              k_values = abs(float(self.ent_StopK.get())-float(self.ent_StartK.get()))/float(self.ent_StepK.get())
              height = k_values * int(self.ent_LayersPerK.get()) * float(self.ent_LayerHeight.get())
+             if self.chk_AAdaptive_var.get() and self.cmb_Firmware.get() == 'Klipper':
+                 try:
+                     a_step = float(self.ent_StepA.get()) or 200.0
+                     a_values = max(1, int(round(abs(float(self.ent_StopA.get())-float(self.ent_StartA.get()))/a_step)) + 1)
+                     height = height * a_values
+                 except:
+                     pass
         except:
             height = 0
         return height
@@ -1009,6 +1068,25 @@ class Toplevel:
             L = float(self.ent_LayerHeight_var.get())
             dK = float(self.ent_StepK_var.get())
             Nsk = float(self.ent_LayersPerK_var.get())
+            if self.chk_AAdaptive_var.get() and self.cmb_Firmware.get() == 'Klipper':
+                try:
+                    a_start = float(self.ent_StartA_var.get())
+                    a_end = float(self.ent_StopA_var.get())
+                    a_step = float(self.ent_StepA_var.get()) or 200.0
+                    k_end = float(self.ent_StopK_var.get())
+                    num_K = max(1, int(round(abs(k_end - Kn) / dK)) + 1)
+                    block_height = L * Nsk
+                    block_index = int(H / block_height)
+                    k_block_index = block_index % num_K
+                    a_block_index = block_index // num_K
+                    num_A = max(1, int(round(abs(a_end - a_start) / a_step)) + 1)
+                    A_val = a_start + a_block_index * (a_step if a_end >= a_start else -a_step)
+                    result = Kn + k_block_index * (dK if k_end >= Kn else -dK)
+                    self.lbl_K['text'] = "A = %s, K = %s" % (round(A_val, 0), round(result, 3))
+                    self.lbl_K.configure(foreground="#007c00")
+                    return result
+                except:
+                    pass
             result = Kn + int(H/(L*Nsk))*dK
             self.lbl_K['text'] = "Calculated K-factor = %s" % round(result, 3)
             self.lbl_K.configure(foreground="#007c00")
@@ -1067,6 +1145,16 @@ class Toplevel:
         perc = self.scl_CoolingPerc_var.get()*5
         self.lbl_CoolingPerc['text'] = '%s%%' % perc
 
+    def handle_Firmware_cmb(self):
+        is_klipper = self.cmb_Firmware.get() == 'Klipper'
+        self.chk_AAdaptive.configure(state="normal" if is_klipper else "disabled")
+        for w in [self._lbl_AFrom, self.ent_StartA, self._lbl_ATo, self.ent_StopA, self._lbl_ABy, self.ent_StepA]:
+            w.configure(state="normal" if is_klipper else "disabled")
+        if not is_klipper:
+            self.chk_AAdaptive_var.set(False)
+        self.validate_pattern_Z()
+        self.calculate_K()
+
     def handle_Kinematics_cmb(self):
         if self.cmb_Kinematics.get() == 'Delta':
             self.ent_BuildVolY.configure(state = "disabled")
@@ -1081,6 +1169,7 @@ class Toplevel:
         self.validate_pattern_Z()
         self.handle_ABL_chk()
         self.handle_Cooling_scl()
+        self.handle_Firmware_cmb()
 
 # root = tk.Tk()
 # top = Toplevel(root)

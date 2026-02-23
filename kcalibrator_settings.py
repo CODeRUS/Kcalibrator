@@ -18,6 +18,10 @@ class SettingClass():
         self.k_end = 0.2   # | start, stop and step values for K-factor calibration
         self.k_step = 0.01 # /
         self.layers_per_k = 5 # number of layers printed with any specific K-factor
+        self.a_adaptive = False # Adaptive Pressure Advance (Klipper only)
+        self.a_start = 500 # acceleration range start
+        self.a_end = 2000 # acceleration range end
+        self.a_step = 200 # acceleration step
         self.z_offset=0.0 # Z-offset
         self.size = (140.0, 70.0) # (X, Y) size of the pattern
         self.retract = (4.0, 30.0) # (length, speed) for retractions
@@ -58,6 +62,14 @@ class SettingClass():
         self.k_step = float(s) if s else 0.0
         s = root.ent_LayersPerK.get()
         self.layers_per_k = int(s) if s else 0
+        self.a_adaptive = root.chk_AAdaptive_var.get() if hasattr(root, 'chk_AAdaptive_var') else False
+        if hasattr(root, 'ent_StartA'):
+            s = root.ent_StartA.get()
+            self.a_start = float(s) if s else 500
+            s = root.ent_StopA.get()
+            self.a_end = float(s) if s else 2000
+            s = root.ent_StepA.get()
+            self.a_step = float(s) if s else 200
         s = root.ent_Zoffset.get()
         self.z_offset = float(s) if s else 0.0
         s1 = root.ent_PatternXsize.get(); s2 = root.ent_PatternYsize.get()
@@ -121,6 +133,12 @@ class SettingClass():
 
         config.set("Config", "# number of layers printed with any specific K-factor")
         config.set("Config", "layers_per_k", str(self.layers_per_k))
+
+        config.set("Config", "# Adaptive Pressure Advance (Klipper only)")
+        config.set("Config", "a_adaptive", str(self.a_adaptive))
+        config.set("Config", "a_start", str(self.a_start))
+        config.set("Config", "a_end", str(self.a_end))
+        config.set("Config", "a_step", str(self.a_step))
 
         config.set("Config", "# Z-offset")
         config.set("Config", "z_offset", str(self.z_offset))
@@ -192,6 +210,16 @@ class SettingClass():
         self.k_end = float(config.get("Config", "k_end"))
         self.k_step = float(config.get("Config", "k_step"))
         self.layers_per_k = int(config.get("Config", "layers_per_k"))
+        try:
+            self.a_adaptive = config.get("Config", "a_adaptive").lower() == "true"
+        except (configparser.NoOptionError, configparser.NoSectionError):
+            self.a_adaptive = False
+        try:
+            self.a_start = float(config.get("Config", "a_start"))
+            self.a_end = float(config.get("Config", "a_end"))
+            self.a_step = float(config.get("Config", "a_step"))
+        except (configparser.NoOptionError, configparser.NoSectionError, ValueError):
+            self.a_start, self.a_end, self.a_step = 500, 2000, 200
         self.z_offset = float(config.get("Config", "z_offset"))
         self.size = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "size")))
         self.retract = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "retract")))
