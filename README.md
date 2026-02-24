@@ -1,5 +1,11 @@
 # Kcalibrator
 Alternative K-factor calibration pattern generator.
+
+# Online version
+[https://coderus.github.io/Kcalibrator/](https://coderus.github.io/Kcalibrator/) — use Kcalibrator in the browser without installation.
+
+# Information
+
 Should provide better (or at least different) way to calibrate Liniar Advance (and similar algorythms) than default [Marlin K-factor Calibration Pattern](https://marlinfw.org/tools/lin_advance/k-factor.html).
 
 ## Requirements
