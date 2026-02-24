@@ -537,15 +537,27 @@
           console.error('fs load err:', err)
         });
 
+        const base = (location.protocol === 'file:' || location.hostname === 'localhost')
+          ? 'http://localhost:8876' : 'https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master';
+        const [r1, r2] = await Promise.all([
+          fetch(base + '/kcalibrator_settings.py'),
+          fetch(base + '/kcalibrator_func.py')
+        ]);
+        if (!r1.ok || !r2.ok) throw new Error('Run: python server.py 8876');
+        pyodide.FS.writeFile("kcalibrator_settings.py", await r1.text(), { encoding: "utf8" });
+        pyodide.FS.writeFile("kcalibrator_func.py", await r2.text(), { encoding: "utf8" });
+
         await pyodide.runPythonAsync(`          
     from pyodide.http import pyfetch
-    settings = await pyfetch("https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master/kcalibrator_settings.py")
-    with open("kcalibrator_settings.py", "wb") as f:
-        f.write(await settings.bytes())
+    #settings = await pyfetch("https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master/kcalibrator_settings.py")
+    #settings = await pyfetch("http://localhost:8876/kcalibrator_settings.py")
+    #with open("kcalibrator_settings.py", "wb") as f:
+    #    f.write(await settings.bytes())
     import kcalibrator_settings as settings
-    kcalibrator = await pyfetch("https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master/kcalibrator_func.py")
-    with open("kcalibrator_func.py", "wb") as f:
-        f.write(await kcalibrator.bytes())
+    #kcalibrator = await pyfetch("https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master/kcalibrator_func.py")
+    #kcalibrator = await pyfetch("http://localhost:8876/kcalibrator_func.py")
+    #with open("kcalibrator_func.py", "wb") as f:
+    #    f.write(await kcalibrator.bytes())
     import kcalibrator_func as kcalibrator
     cfg = settings.SettingClass()
 
