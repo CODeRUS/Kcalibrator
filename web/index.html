@@ -611,8 +611,9 @@
           console.error('fs load err:', err)
         });
 
-        const base = (location.protocol === 'file:' || location.hostname === 'localhost')
-          ? 'http://localhost:8876' : 'https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master';
+        const base = location.hostname === 'localhost'
+          ? location.origin
+          : 'https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master';
         const [r1, r2] = await Promise.all([
           fetch(base + '/kcalibrator_settings.py'),
           fetch(base + '/kcalibrator_func.py')
