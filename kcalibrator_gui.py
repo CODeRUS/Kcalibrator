@@ -242,7 +242,7 @@ class Toplevel:
         self.ent_LayersPerK.configure(textvariable = self.ent_LayersPerK_var)
 
         self.chk_AAdaptive = tk.Checkbutton(self.lf_PatternConfig)
-        self.chk_AAdaptive.place(x=0, y=72, height=20, width=200)
+        self.chk_AAdaptive.place(x=5, y=72, height=22)
         self.chk_AAdaptive.configure(activebackground="#ececec")
         self.chk_AAdaptive.configure(activeforeground="#000000")
         self.chk_AAdaptive.configure(background="#d9d9d9")
@@ -252,7 +252,7 @@ class Toplevel:
         self.chk_AAdaptive.configure(foreground="#000000")
         self.chk_AAdaptive.configure(highlightbackground="#d9d9d9")
         self.chk_AAdaptive.configure(highlightcolor="black")
-        self.chk_AAdaptive.configure(justify='left')
+        # self.chk_AAdaptive.configure(justify='left')
         self.chk_AAdaptive.configure(text='''Adaptive Pressure Advance''')
         self.chk_AAdaptive_var = tk.BooleanVar()
         self.chk_AAdaptive.configure(variable=self.chk_AAdaptive_var)
@@ -987,6 +987,7 @@ class Toplevel:
         self.cmb_Firmware_var.trace_add('write', lambda name, index, mode: self.handle_Firmware_cmb())
         self.chk_AAdaptive_var.trace_add('write', lambda name, index, mode: self.calculate_K())
         self.chk_AAdaptive_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
+        self.chk_AAdaptive_var.trace_add('write', lambda name, index, mode: self.handle_Firmware_cmb())
         self.ent_StartA_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
         self.ent_StopA_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
         self.ent_StepA_var.trace_add('write', lambda name, index, mode: self.validate_pattern_Z())
@@ -1147,9 +1148,11 @@ class Toplevel:
 
     def handle_Firmware_cmb(self):
         is_klipper = self.cmb_Firmware.get() == 'Klipper'
+        chk_checked = self.chk_AAdaptive_var.get()
         self.chk_AAdaptive.configure(state="normal" if is_klipper else "disabled")
+        a_fields_enabled = is_klipper and chk_checked
         for w in [self._lbl_AFrom, self.ent_StartA, self._lbl_ATo, self.ent_StopA, self._lbl_ABy, self.ent_StepA]:
-            w.configure(state="normal" if is_klipper else "disabled")
+            w.configure(state="normal" if a_fields_enabled else "disabled")
         if not is_klipper:
             self.chk_AAdaptive_var.set(False)
         self.validate_pattern_Z()
