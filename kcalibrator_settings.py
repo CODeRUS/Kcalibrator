@@ -14,19 +14,19 @@ class SettingClass():
     def __init__(self):
         self.speed_slow = 20.0 # slow speed for calibration pattern
         self.speed_fast = 100.0 # fast speed for calibrtion pattern
-        self.k_start = 0.0 # \
-        self.k_end = 0.2   # | start, stop and step values for K-factor calibration
+        self.k_start = 0.01 # \
+        self.k_end = 0.08   # | start, stop and step values for K-factor calibration
         self.k_step = 0.01 # /
         self.layers_per_k = 5 # number of layers printed with any specific K-factor
         self.a_adaptive = False # Adaptive Pressure Advance (Klipper only)
         self.a_start = 500 # acceleration range start
         self.a_end = 2000 # acceleration range end
-        self.a_step = 200 # acceleration step
+        self.a_step = 250 # acceleration step
         self.z_offset=0.0 # Z-offset
         self.size = (140.0, 70.0) # (X, Y) size of the pattern
-        self.retract = (4.0, 30.0) # (length, speed) for retractions
+        self.retract = (0.8, 25.0) # (length, speed) for retractions
         self.bed_size = (235.0, 235.0, 250.0) # (X, Y) size of the bed
-        self.temperature = (210, 60) # (hotend, bed) temperatures
+        self.temperature = (220, 60) # (hotend, bed) temperatures
         self.path_spd_fractions = (0.2, 0.6, 0.2) #fractions for pattern parts printed with slow and fast speeds
         self.retract_at_layer_change = True # retract at layer change
         self.double_perimeter = True # print test with two perimeters instead of one
@@ -44,7 +44,7 @@ class SettingClass():
         self.def_layer = 0.2 # layer height
         self.def_speed_print = 40.0 # default printing speed (first layer, etc.)
         self.def_speed_travel = 160.0 # defauld traver speed
-        self.def_cooling = 50 # part cooling fan speed (0-100)
+        self.def_cooling = 80 # part cooling fan speed (0-100)
 
     def updatesettings(self, root):
         """
@@ -69,7 +69,7 @@ class SettingClass():
             s = root.ent_StopA.get()
             self.a_end = float(s) if s else 2000
             s = root.ent_StepA.get()
-            self.a_step = float(s) if s else 200
+            self.a_step = float(s) if s else 250
         s = root.ent_Zoffset.get()
         self.z_offset = float(s) if s else 0.0
         s1 = root.ent_PatternXsize.get(); s2 = root.ent_PatternYsize.get()
@@ -219,7 +219,7 @@ class SettingClass():
             self.a_end = float(config.get("Config", "a_end"))
             self.a_step = float(config.get("Config", "a_step"))
         except (configparser.NoOptionError, configparser.NoSectionError, ValueError):
-            self.a_start, self.a_end, self.a_step = 500, 2000, 200
+            self.a_start, self.a_end, self.a_step = 500, 2000, 250
         self.z_offset = float(config.get("Config", "z_offset"))
         self.size = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "size")))
         self.retract = tuple(float(v) for v in re.findall(r"(\d+(?:\.\d+)?)", config.get("Config", "retract")))

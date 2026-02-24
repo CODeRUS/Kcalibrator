@@ -36,7 +36,11 @@ def update_and_create():
     global currentConfig, top
     currentConfig.updatesettings(top)
     gcode = kcalibrator.creategcode(currentConfig)
-    path = fldg.asksaveasfilename(title = "Save the G-code", filetypes = (("G-code files","*.gcode"),("All files","*.*")), defaultextension = ".gcode", initialfile = "KF_{b}-{e}-{s}_H{t[0]}-B{t[1]}.gcode".format(b=currentConfig.k_start, e=currentConfig.k_end, s=currentConfig.k_step, t=currentConfig.temperature))
+    base = "KF_{b}-{e}-{s}".format(b=currentConfig.k_start, e=currentConfig.k_end, s=currentConfig.k_step)
+    if getattr(currentConfig, 'a_adaptive', False):
+        base += "_A{aa}-{ab}-{ac}".format(aa=currentConfig.a_start, ab=currentConfig.a_end, ac=currentConfig.a_step)
+    base += "_H{t[0]}-B{t[1]}.gcode".format(t=currentConfig.temperature)
+    path = fldg.asksaveasfilename(title = "Save the G-code", filetypes = (("G-code files","*.gcode"),("All files","*.*")), defaultextension = ".gcode", initialfile = base)
     # path = fldg.asksaveasfile(title = "Save the G-code", filetypes = (("G-code files","*.gcode"),("All files","*.*")), defaultextension = ".gcode", initialfile = "KF_{b}-{e}-{s}_H{t[0]}-B{t[1]}.gcode".format(b=currentConfig.k_start, e=currentConfig.k_end, s=currentConfig.k_step, t=currentConfig.temperature))
     with open(path, "w") as out:
         out.writelines(gcode)

@@ -725,7 +725,7 @@ class Toplevel:
         self.lbl_CoolingPerc.configure(anchor='w')
         self.lbl_CoolingPerc.configure(justify='left')
         self.lbl_CoolingPerc.configure(takefocus="0")
-        self.lbl_CoolingPerc.configure(text='''50%''')
+        self.lbl_CoolingPerc.configure(text='''100%''')
 
         self.TSeparator3 = ttk.Separator(self.lf_PrintConfig)
         self.TSeparator3.place(x=0, y=75, width=self.PRINT_W+4, height=2)
@@ -883,7 +883,7 @@ class Toplevel:
 
         self.scl_CoolingPerc = ttk.Scale(self.lf_PrintConfig, from_=0, to=20)
         self.scl_CoolingPerc.place(x=60, y=53, width=120, height=20)
-        self.scl_CoolingPerc.configure(value="10")
+        self.scl_CoolingPerc.configure(value="20")
         self.scl_CoolingPerc.configure(length="20")
         self.scl_CoolingPerc.configure(takefocus="")
         self.scl_CoolingPerc_var = tk.IntVar()
@@ -1045,7 +1045,7 @@ class Toplevel:
         self.ent_FirstLayerSpeed_var.set(str(config.def_speed_print))
         self.ent_TravelSpeed_var.set(str(config.def_speed_travel))
         self.lbl_CoolingPerc['text'] = '%s%%' % config.def_cooling
-        self.scl_CoolingPerc.set(config.def_cooling/5)
+        self.scl_CoolingPerc.set(config.def_cooling // 5)
 
     def pattern_height(self):
         try:
