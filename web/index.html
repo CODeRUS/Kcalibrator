@@ -1,0 +1,685 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Pressure Advance / Kcalibrator</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+      .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      @media (min-width: 992px) {
+        .grid-layout {
+          grid-template-columns: 2fr 1fr;
+          grid-template-areas:
+            "pattern print"
+            "machine print";
+        }
+        .pattern { grid-area: pattern; }
+        .print { grid-area: print; }
+        .machine { grid-area: machine; }
+      }
+
+      .config-block {
+        min-width: 280px;
+      }
+
+      .no-spinner::-webkit-outer-spin-button,
+      .no-spinner::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .no-spinner {
+        -moz-appearance: textfield; /* Firefox */
+      }
+
+      .input-group>.input-group-extra {
+        flex: 0 0 6ch;
+      }
+
+      .splash {
+        z-index: 100;
+        cursor : wait;
+        position : fixed;
+        top : 0%;
+        left : 0%;
+        height : 100%;
+        width : 100%;
+        background-color: white;
+        transition : all ease-in-out 600ms;
+      }
+
+      .splash-header {
+        height : 100%;
+        color : black;
+        font-family : consolas;
+        font-size : 30px;
+        display : flex;
+        justify-content: center;
+        align-items : center;
+      }
+
+      .hidden{
+        transition : 0.5s;
+        display : none;
+      }
+    </style>
+  </head>
+  <body class="p-4">
+<form class="container needs-validation" id="form">
+  <h3>Pressure Advance / Kcalibrator</h3>
+  <div class="grid-layout">
+    
+    <div class="pattern config-block border rounded card">
+      <div class="card-header">Pattern configuration</div>
+      <div class="card-body">
+        <h6>Start, end and step values for K-factor calibration</h6>
+        <div class="input-group mb-3">
+          <span class="input-group-text">From K =</span>
+          <input id="k_start" type="number" class="form-control" min="0" max="2" value="0.01" step="0.001" oninput="size_z_update()">
+          <span class="input-group-text">to K =</span>
+          <input id="k_end" type="number" class="form-control" min="0" max="2" value="0.08" step="0.001" oninput="size_z_update()">
+          <span class="input-group-text">step by</span>
+          <input id="k_step" type="number" class="form-control" min="0" max="0.1" value="0.01" step="0.001" oninput="size_z_update()">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text">Number of layers printed with same value</span>
+          <input id="layers_per_k" type="number" class="form-control" min="0" max="20" value="5" oninput="size_z_update()">
+        </div>
+        <div id="a_adaptive_section">
+        <div class="form-check mb-2">
+          <input id="a_adaptive" class="form-check-input" type="checkbox" onchange="toggleAFields(); size_z_update(); calculate()">
+          <label class="form-check-label" for="a_adaptive">Adaptive Pressure Advance (Klipper only)</label>
+        </div>
+        <div id="a_fields" class="input-group mb-3" style="display:none">
+          <span class="input-group-text">From A =</span>
+          <input id="a_start" type="number" class="form-control" min="0" max="10000" value="500" oninput="size_z_update()">
+          <span class="input-group-text">to A =</span>
+          <input id="a_end" type="number" class="form-control" min="0" max="10000" value="2000" oninput="size_z_update()">
+          <span class="input-group-text">change by</span>
+          <input id="a_step" type="number" class="form-control" min="0" max="1000" value="250" oninput="size_z_update()">
+        </div>
+        </div>
+        <hr class="mb-3"/>
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <div class="input-group mb-3">
+              <span class="input-group-text w-50">Fast speed</span>
+              <input id="speed_fast" type="number" class="form-control" min="0" max="500" value="100">
+              <span class="input-group-text">mm/s</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group mb-3">
+              <span class="input-group-text w-50">Slow speed</span>
+              <input id="speed_slow" type="number" class="form-control" min="0" max="500" value="20">
+              <span class="input-group-text">mm/s</span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text">Fractions for pattern paths</span>
+          <input id="path_spd_fractions_1" type="number" class="form-control" min="0.1" max="0.8" step="0.1" value="0.2" oninput="fraction1_update()">
+          <input id="path_spd_fractions_2" type="number" class="form-control" min="0.1" max="0.8" step="0.1" value="0.6" oninput="fraction2_update()">
+          <input id="path_spd_fractions_3" type="number" class="form-control" min="0.1" max="0.8" step="0.1" value="0.2" oninput="fraction3_update()">
+        </div>
+        <hr class="mb-3"/>
+        <div class="input-group mb-3">
+          <span class="input-group-text">Size of the pattern (X×Y×Z)</span>
+          <input id="size_x" type="number" class="form-control" min="0" max="300" value="140">
+          <span class="input-group-text">×</span>
+          <input id="size_y" type="number" class="form-control" min="0" max="300" value="70">
+          <span class="input-group-text">×</span>
+          <input id="size_z" disabled type="number" class="form-control" value="300.0">
+          <span class="input-group-text">mm</span>
+        </div>
+        <div class="form-check">
+          <input id="double_perimeter" class="form-check-input" type="checkbox" checked>
+          <label class="form-check-label" for="double_perimeter">Print pattern with two perimeters instead of one</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="print config-block border rounded card">
+      <div class="card-header">Print configuration</div>
+      <div class="card-body">
+        <div class="col mb-2">
+          <div class="input-group mb-3">
+            <span class="input-group-text w-50">Nozzle temperature</span>
+            <input id="temp_1" type="number" class="form-control" min="0" max="500" value="220" oninvalid="this.setCustomValidity(`Please ${this.min} Enter ${this.max} Shop ${this.value} Name`)" oninput="setCustomValidity('')">
+            <span class="input-group-text">°C</span>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text w-50">Bed temperature</span>
+            <input id="temp_2" type="number" class="form-control" min="0" max="200" value="60">
+            <span class="input-group-text">°C</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <span class="input-group-text">Cooling</span>
+          <input type="range" class="form-control" id="coolingRange" min="0" max="100" value="100" oninput="this.nextElementSibling.value = this.value">
+          <input id="def_cooling" type="number" class="form-control text no-spinner input-group-extra" min="0" max="100" value="100" oninput="this.previousElementSibling.value = this.value">
+          <span class="input-group-text">%</span>
+        </div>
+        <hr class="mb-3"/>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">Retraction distance</span>
+          <input id="retract_len" type="number" class="form-control" min="0" max="5" step="0.1" value="0.8">
+          <span class="input-group-text">mm</span>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">Retraction speed</span>
+          <input id="retract_spd" type="number" class="form-control" min="1" max="100" value="25">
+          <span class="input-group-text">mm/s</span>
+        </div>
+        <div class="form-check mb-2">
+          <input id="retract_at_layer_change" class="form-check-input" type="checkbox" checked>
+          <label class="form-check-label" for="retract_at_layer_change">Retract at layer change</label>
+        </div>
+        <hr class="mb-3"/>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">First layer speed</span>
+          <input id="def_speed_print" type="number" class="form-control" min="0" max="1000" value="40">
+          <span class="input-group-text">mm/s</span>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">Travel speed</span>
+          <input id="def_speed_travel" type="number" class="form-control" min="0" max="1000" value="160">
+          <span class="input-group-text">mm/s</span>
+        </div>
+        <hr class="mb-3"/>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">Line width</span>
+          <input id="def_line_width" type="number" class="form-control" min="0.1" max="10" step="0.01" value="0.4">
+          <span class="input-group-text">mm</span>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">Layer height</span>
+          <input id="def_layer" type="number" class="form-control" min="0.01" max="10" step="0.01" value="0.2" oninput="size_z_update()">
+          <span class="input-group-text">mm</span>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">Filament diameter</span>
+          <input id="def_fil_dia" type="number" class="form-control" min="1" max="3" step="0.01" value="1.75">
+          <span class="input-group-text">mm</span>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text w-50">Z offset</span>
+          <input id="z_offset" type="number" class="form-control" min="0" max="10" step="0.01" value="0">
+          <span class="input-group-text">mm</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="machine config-block border rounded card">
+      <div class="card-header">Machine configuration</div>
+      <div class="card-body">
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <div class="input-group mb-3">
+              <span class="input-group-text">Kinematics</span>
+              <select id="kinematics" class="form-select">
+                <option selected>Cartesian</option>
+                <option>Delta</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group mb-3">
+              <span class="input-group-text">Firmware</span>
+              <select id="firmware" class="form-select" onchange="toggleAFields(); size_z_update(); calculate()">
+                <option>Marlin</option>
+                <option selected>Klipper</option>
+                <option>RepRapFirmware</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text">Build Volume</span>
+          <input id="bed_size_x" type="number" class="form-control" min="0" max="500" step="0.1" value="235">
+          <span class="input-group-text">×</span>
+          <input id="bed_size_y" type="number" class="form-control" min="0" max="500" step="0.1" value="235">
+          <span class="input-group-text">×</span>
+          <input id="bed_size_z" type="number" class="form-control" min="0" max="500" step="0.1" value="250">
+          <span class="input-group-text">mm</span>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-text btn btn-light border" onclick="use_abl.checked = !use_abl.checked; abl_type.disabled = !use_abl.checked">
+            <input id="use_abl" class="form-check-input" type="checkbox" onclick="event.stopPropagation(); abl_type.disabled = !use_abl.checked">
+          </div>
+          <span class="input-group-text btn btn-light text-start border w-50" onclick="use_abl.checked = !use_abl.checked; abl_type.disabled = !use_abl.checked">Use autoleveling</span>
+          <select id="abl_type" class="form-select" disabled>
+            <option selected>G29</option>
+            <option>M83</option>
+            <option>G32</option>
+            <option>BED_MESH_CALIBRATE</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div class="input-group mb-3">
+      <span class="input-group-text w-50">Height with the best quality:</span>
+      <input id="measure" type="number" class="form-control" value="0.0" oninput="calculate()">
+      <span class="input-group-text">mm</span>
+    </div>
+    <div id="result_a_row" class="input-group mb-3" style="display:none">
+      <span class="input-group-text w-50">Calculated A</span>
+      <input id="result_a" type="number" class="form-control no-spinner" value="0" readonly>
+      <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboardA(event)"><i class="bi bi-clipboard me-1"></i>Copy</button>
+      <span class="input-group-text">mm/s²</span>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text w-50">Calculated K-factor</span>
+      <input id="result" type="number" class="form-control no-spinner" value="0.0" readonly>
+      <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard(event)"><i class="bi bi-clipboard me-1"></i>Copy</button>
+      <span class="input-group-text">mm</span>
+    </div>
+    <div class="row align-items-center">
+      <div class="mb-3">
+        <label class ="btn btn-secondary mb-3" for="file"><i class="bi bi-box-arrow-up me-1"></i>Load cfg file</label>
+        <input class="form-control" type="file" id="file" hidden oninput="uploadConfig()">
+        <button class="btn btn-secondary mb-3" onclick="saveConfig(event)"><i class="bi bi-box-arrow-in-down me-1"></i>Save cfg file</button>
+        <button class="btn btn-secondary mb-3" onclick="updateConfig(event)"><i class="bi bi-save me-1"></i>Save to cache</button>
+        <button class="btn btn-danger mb-3" onclick="resetConfig(event)"><i class="bi bi-x-circle me-1"></i>Reset to default</button>
+        <button class="btn btn-primary mb-3" onclick="createGcode(event)"><i class="bi bi-cloud-download me-1"></i>Generate G-code</button>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <p class="text-end fs-6 lh-1 mb-1">Kcalibrator web generator by Andrey Kozhevnikov (<a href="https://github.com/CODeRUS/Kcalibrator" target="_blank">https://github.com/CODeRUS/Kcalibrator</a>) 2025</p>
+    <p class="text-end fs-6 lh-1 mt-1">Kcalibrator by Victor Shapovalov (<a href="https://github.com/ArtificalSUN/Kcalibrator" target="_blank">https://github.com/ArtificalSUN/Kcalibrator</a>), 2022</p>
+    <p class="text-end fs-6 lh-1 mb-1">Powered by <a href="https://github.com/pyodide/pyodide" target="_blank">Pyodide</a></p>
+  </div>
+
+</form>
+<div class="splash">
+  <h1 class="splash-header">Kcalibrator is loading...</h1>
+</div>
+    <script>
+      function toggleAFields() {
+        const fw = document.getElementById('firmware');
+        const chk = document.getElementById('a_adaptive');
+        const section = document.getElementById('a_adaptive_section');
+        const isKlipper = fw && fw.value === 'Klipper';
+        section.style.display = isKlipper ? 'block' : 'none';
+        if (!isKlipper) chk.checked = false;
+        document.getElementById('a_fields').style.display = (isKlipper && chk.checked) ? 'flex' : 'none';
+      }
+
+      function fraction1_update() {
+        let val = 1 - parseFloat(path_spd_fractions_1.value) - parseFloat(path_spd_fractions_3.value)
+        if (val < 0.1) {
+            path_spd_fractions_2.value = 0.1
+            path_spd_fractions_3.value = (1 - parseFloat(path_spd_fractions_1.value) - parseFloat(path_spd_fractions_2.value)).toFixed(1)
+        } else {
+            path_spd_fractions_2.value = val.toFixed(1)
+        }
+      }
+
+      function fraction2_update() {
+        let val = 1 - parseFloat(path_spd_fractions_2.value) - parseFloat(path_spd_fractions_1.value)
+        if (val < 0.1) {
+            path_spd_fractions_3.value = 0.1
+            path_spd_fractions_1.value = (1 - parseFloat(path_spd_fractions_2.value) - parseFloat(path_spd_fractions_3.value)).toFixed(1)
+        } else {
+            path_spd_fractions_3.value = val.toFixed(1)
+        }
+      }
+
+      function fraction3_update() {
+        let val = 1 - parseFloat(path_spd_fractions_3.value) - parseFloat(path_spd_fractions_2.value)
+        if (val < 0.1) {
+            path_spd_fractions_1.value = 0.1
+            path_spd_fractions_2.value = (1 - parseFloat(path_spd_fractions_3.value) - parseFloat(path_spd_fractions_1.value)).toFixed(1)
+        } else {
+            path_spd_fractions_1.value = val.toFixed(1)
+        }
+      }
+
+      function copyToClipboard(event) {
+        event.preventDefault();
+        navigator.clipboard.writeText(result.value);
+      }
+
+      function copyToClipboardA(event) {
+        event.preventDefault();
+        navigator.clipboard.writeText(document.getElementById('result_a').value);
+      }
+
+      function calculate() {
+        try {
+          const H = parseFloat(measure.value)
+          const Kn = parseFloat(k_start.value)
+          const L = parseFloat(def_layer.value)
+          const dK = parseFloat(k_step.value)
+          const Nsk = parseFloat(layers_per_k.value)
+          const kEnd = parseFloat(document.getElementById('k_end').value)
+
+          if (document.getElementById('a_adaptive').checked && document.getElementById('firmware').value === 'Klipper') {
+            const a_start = parseFloat(document.getElementById('a_start').value)
+            const a_end = parseFloat(document.getElementById('a_end').value)
+            const a_step = parseFloat(document.getElementById('a_step').value) || 200
+            const num_K = Math.max(1, Math.round(Math.abs(kEnd - Kn) / dK) + 1)
+            const block_height = L * Nsk
+            const block_index = Math.floor(H / block_height)
+            const k_block_index = block_index % num_K
+            const a_block_index = Math.floor(block_index / num_K)
+            const num_A = Math.max(1, Math.round(Math.abs(a_end - a_start) / a_step) + 1)
+            const A_val = a_start + a_block_index * (a_end >= a_start ? a_step : -a_step)
+            const k_val = Kn + k_block_index * (kEnd >= Kn ? dK : -dK)
+            result.value = k_val.toFixed(3)
+            document.getElementById('result_a').value = Math.round(A_val)
+            document.getElementById('result_a_row').style.display = 'flex'
+          } else {
+            const k = Kn + Math.floor(H / (L * Nsk)) * dK
+            result.value = k.toFixed(3)
+            document.getElementById('result_a_row').style.display = 'none'
+          }
+        } catch (e) {
+          result.value = '0.000'
+          document.getElementById('result_a_row').style.display = 'none'
+        }
+      }
+
+      function size_z_update() {
+        const k_values = Math.abs(parseFloat(k_end.value) - parseFloat(k_start.value)) / parseFloat(k_step.value)
+        let height = k_values * parseInt(layers_per_k.value) * parseFloat(def_layer.value)
+        if (document.getElementById('a_adaptive').checked && document.getElementById('firmware').value === 'Klipper') {
+          try {
+            const a_step = parseFloat(document.getElementById('a_step').value) || 200
+            const a_values = Math.max(1, Math.round(Math.abs(parseFloat(document.getElementById('a_end').value) - parseFloat(document.getElementById('a_start').value)) / a_step) + 1)
+            height = height * a_values
+          } catch (e) {}
+        }
+        size_z.value = height.toFixed(1)
+        calculate()
+      }
+
+      function download(data, name) {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+        element.setAttribute('download', name);
+        element.style.display = 'none';
+
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
+
+      async function saveConfig(event) {
+        if (!form.checkValidity())
+          return
+        event.preventDefault();
+
+        console.log("saveConfig");
+        await updateConfig(null)
+        let cfg = await pyodide.runPython(`
+    open('/mnt/Kcalibrator.cfg', 'rt').read()
+`)
+        console.log(cfg);
+        download(cfg, 'Kcalibrator.cfg')
+      }
+
+      async function uploadConfig() {
+        console.log("uploadConfig");
+        var file = document.getElementById("file").files[0];
+        var reader = new FileReader();
+        reader.readAsBinaryString(file);
+        reader.onload = async (evt) => { 
+            const content = evt.target.result; 
+            console.log(content);
+            pyodide.FS.writeFile("/mnt/Kcalibrator.cfg", content, { encoding: "utf8" });
+            pyodide.FS.syncfs(false, function(err) {
+              if (!err)
+                return
+              console.error('fs save err:', err)
+            });
+            await loadConfig();
+        };
+      }
+
+      function getConfig(key) {
+        const val = pyodide.runPython(`cfg.__getattribute__('${key}')`)
+        console.log('getConfig', key, val)
+        return val
+      }
+
+      function setConfig(key, val) {
+        console.log('setConfig', key, val)
+        pyodide.runPython(`cfg.__setattr__('${key}', ${val})`)
+      }
+
+      function getConfigIndexed(key, i) {
+        const val = pyodide.runPython(`cfg.__getattribute__('${key}').__getitem__(${i})`)
+        console.log('getConfigIndexed', key, val)
+        return val
+      }
+
+      async function loadConfig() {
+        console.log("loadConfig");
+        await pyodide.runPythonAsync(`
+    cfg.read_config("/mnt/Kcalibrator.cfg")
+`)
+        speed_slow.value = getConfig('speed_slow')
+        speed_fast.value = getConfig('speed_fast')
+        k_start.value = getConfig('k_start')
+        k_end.value = getConfig('k_end')
+        k_step.value = getConfig('k_step')
+        layers_per_k.value = getConfig('layers_per_k')
+        document.getElementById('a_adaptive').checked = getConfig('a_adaptive')
+        document.getElementById('a_start').value = getConfig('a_start')
+        document.getElementById('a_end').value = getConfig('a_end')
+        document.getElementById('a_step').value = getConfig('a_step')
+        toggleAFields()
+        z_offset.value = getConfig('z_offset')
+        size_x.value = getConfigIndexed('size', 0)
+        size_y.value = getConfigIndexed('size', 1)
+        retract_len.value = getConfigIndexed('retract', 0)
+        retract_spd.value = getConfigIndexed('retract', 1)
+        bed_size_x.value = getConfigIndexed('bed_size', 0)
+        bed_size_y.value = getConfigIndexed('bed_size', 1)
+        bed_size_z.value = getConfigIndexed('bed_size', 2)
+        temp_1.value = getConfigIndexed('temperature', 0)
+        temp_2.value = getConfigIndexed('temperature', 1)
+        path_spd_fractions_1.value = getConfigIndexed('path_spd_fractions', 0)
+        path_spd_fractions_2.value = getConfigIndexed('path_spd_fractions', 1)
+        path_spd_fractions_3.value = getConfigIndexed('path_spd_fractions', 2)
+        retract_at_layer_change.checked = getConfig('retract_at_layer_change')
+        double_perimeter.checked = getConfig('double_perimeter')
+        use_abl.checked = getConfig('use_ABL')
+        abl_type.disabled = !use_abl.checked
+        abl_type.value = getConfig('ABL_type')
+        firmware.value = getConfig('firmware')
+        kinematics.value = getConfig('kinematics')
+        def_fil_dia.value = getConfig('def_fil_dia')
+        def_line_width.value = getConfig('def_line_width')
+        def_layer.value = getConfig('def_layer')
+        def_speed_print.value = getConfig('def_speed_print')
+        def_speed_travel.value = getConfig('def_speed_travel')
+        def_cooling.value = getConfig('def_cooling')
+        const cr = document.getElementById('coolingRange'); if (cr) cr.value = getConfig('def_cooling')
+
+        size_z_update()
+        calculate()
+      }
+
+      function toBoolStr(b) {
+        return b ? 'True' : 'False'
+      }
+
+      function toStr(v) {
+        return `'${v}'`
+      }
+
+      async function resetConfig(event) {
+          event.preventDefault();
+        await pyodide.runPythonAsync(`
+    cfg = settings.SettingClass()
+    cfg.save_config("/mnt/Kcalibrator.cfg")
+`)
+        pyodide.FS.syncfs(false, function(err) {
+          if (!err)
+            return
+          console.error('fs save err:', err)
+        });
+
+        loadConfig()
+      }
+
+      async function updateConfig(event) {
+        if (event) {
+          if (!form.checkValidity())
+            return
+          event.preventDefault();
+        }
+
+        setConfig('speed_slow', speed_slow.value)
+        setConfig('speed_fast', speed_fast.value)
+        setConfig('k_start', k_start.value)
+        setConfig('k_end', k_end.value)
+        setConfig('k_step', k_step.value)
+        setConfig('layers_per_k', layers_per_k.value)
+        setConfig('a_adaptive', toBoolStr(document.getElementById('a_adaptive').checked))
+        setConfig('a_start', document.getElementById('a_start').value)
+        setConfig('a_end', document.getElementById('a_end').value)
+        setConfig('a_step', document.getElementById('a_step').value)
+        setConfig('size', `(${size_x.value}, ${size_y.value})`)
+        setConfig('retract', `(${retract_len.value}, ${retract_spd.value})`)
+        setConfig('bed_size', `(${bed_size_x.value}, ${bed_size_y.value}, ${bed_size_z.value})`)
+        setConfig('temperature', `(${temp_1.value}, ${temp_2.value})`)
+        setConfig('path_spd_fractions', `(${path_spd_fractions_1.value}, ${path_spd_fractions_2.value}, ${path_spd_fractions_3.value})`)
+        setConfig('retract_at_layer_change', toBoolStr(retract_at_layer_change.checked))
+        setConfig('double_perimeter', toBoolStr(double_perimeter.checked))
+        setConfig('use_abl', toBoolStr(use_abl.checked))
+        setConfig('abl_type', toStr(abl_type.value))
+        setConfig('firmware', toStr(firmware.value))
+        setConfig('kinematics', toStr(kinematics.value))
+        setConfig('def_fil_dia', def_fil_dia.value)
+        setConfig('def_line_width', def_line_width.value)
+        setConfig('def_layer', def_layer.value)
+        setConfig('def_speed_print', def_speed_print.value)
+        setConfig('def_speed_travel', def_speed_travel.value)
+        setConfig('def_cooling', def_cooling.value)
+
+        await pyodide.runPythonAsync(`
+    cfg.save_config("/mnt/Kcalibrator.cfg")
+`)
+        pyodide.FS.syncfs(false, function(err) {
+          if (!err)
+            return
+          console.error('fs save err:', err)
+        });
+      }
+
+      async function createGcode(event) {
+        console.log("createGcode");
+        if (!form.checkValidity())
+          return
+        event.preventDefault(); 
+
+        await updateConfig(null)
+        let gcode = await pyodide.runPython(`
+    ''.join(kcalibrator.creategcode(cfg))
+`)
+        let name = `KF_${k_start.value}-${k_end.value}-${k_step.value}_H${temp_1.value}-B${temp_2.value}`
+        if (document.getElementById('a_adaptive').checked && document.getElementById('firmware').value === 'Klipper') {
+          name += `_A${document.getElementById('a_start').value}-${document.getElementById('a_end').value}-${document.getElementById('a_step').value}`
+        }
+        name += '.gcode'
+        download(gcode, name)
+      }
+
+      async function load() {
+        window.pyodide = await loadPyodide();
+
+        let mountDir = "/mnt";
+        pyodide.FS.mkdirTree(mountDir);
+        pyodide.FS.mount(pyodide.FS.filesystems.IDBFS, {}, mountDir);
+        pyodide.FS.syncfs(true, function(err) {
+          if (!err)
+            return
+          console.error('fs load err:', err)
+        });
+
+        const base = (location.protocol === 'file:' || location.hostname === 'localhost')
+          ? 'http://localhost:8876' : 'https://raw.githubusercontent.com/CODeRUS/Kcalibrator/refs/heads/master';
+        const [r1, r2] = await Promise.all([
+          fetch(base + '/kcalibrator_settings.py'),
+          fetch(base + '/kcalibrator_func.py')
+        ]);
+        if (!r1.ok || !r2.ok) throw new Error('Run: python server.py 8876');
+        pyodide.FS.writeFile("kcalibrator_settings.py", await r1.text(), { encoding: "utf8" });
+        pyodide.FS.writeFile("kcalibrator_func.py", await r2.text(), { encoding: "utf8" });
+
+        await pyodide.runPythonAsync(`          
+    import kcalibrator_settings as settings
+    import kcalibrator_func as kcalibrator
+    cfg = settings.SettingClass()
+
+    from pathlib import Path
+    cfg_path = Path("/mnt/Kcalibrator.cfg")
+    if not cfg_path.exists():
+      print('saving default config')
+      cfg.save_config("/mnt/Kcalibrator.cfg")
+`)
+        console.log('pyodide loaded')
+        loadConfig()
+
+        const splashScreen = document.querySelector('.splash');
+        splashScreen.style.opacity = 0;
+        setTimeout(()=>{
+          splashScreen.classList.add('hidden')
+        }, 610);
+      }
+      load();
+
+      window.onload = async function() {
+        const speed_slow = document.getElementById('speed_slow')
+        const speed_fast = document.getElementById('speed_fast')
+        const k_start = document.getElementById('k_start')
+        const k_end = document.getElementById('k_end')
+        const k_step = document.getElementById('k_step')
+        const layers_per_k = document.getElementById('layers_per_k')
+        const z_offset = document.getElementById('z_offset')
+        const size_x = document.getElementById('size_x')
+        const size_y = document.getElementById('size_y')
+        const size_z = document.getElementById('size_z')
+        const retract_len = document.getElementById('retract_len')
+        const retract_spd = document.getElementById('retract_spd')
+        const bed_size_x = document.getElementById('bed_size_x')
+        const bed_size_y = document.getElementById('bed_size_y')
+        const bed_size_z = document.getElementById('bed_size_z')
+        const temp_1 = document.getElementById('temp_1')
+        const temp_2 = document.getElementById('temp_2')
+        const path_spd_fractions_1 = document.getElementById('path_spd_fractions_1')
+        const path_spd_fractions_2 = document.getElementById('path_spd_fractions_2')
+        const path_spd_fractions_3 = document.getElementById('path_spd_fractions_3')
+        const retract_at_layer_change = document.getElementById('retract_at_layer_change')
+        const double_perimeter = document.getElementById('double_perimeter')
+        const use_abl = document.getElementById('use_abl')
+        const abl_type = document.getElementById('abl_type')
+        const firmware = document.getElementById('firmware')
+        const kinematics = document.getElementById('kinematics')
+        const def_fil_dia = document.getElementById('def_fil_dia')
+        const def_line_width = document.getElementById('def_line_width')
+        const def_layer = document.getElementById('def_layer')
+        const def_speed_print = document.getElementById('def_speed_print')
+        const def_speed_travel = document.getElementById('def_speed_travel')
+        const def_cooling = document.getElementById('def_cooling')
+        const result = document.getElementById('result')
+        const measure = document.getElementById('measure')
+        const form = document.getElementById('form')
+      }
+    </script>
+  </body>
+</html>

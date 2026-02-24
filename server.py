@@ -2,7 +2,7 @@
 """
 Local HTTP server for Kcalibrator web.
 Serves the project directory with kcalibrator_settings.py and kcalibrator_func.py.
-Serves index.html from Kcalibrator-gh. Used when opening http://localhost:PORT/ in browser.
+Serves index.html from web/. Used when opening http://localhost:PORT/ in browser.
 
 Usage: python server.py [port]
 Default port: 8876
@@ -13,7 +13,7 @@ from pathlib import Path
 
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8876
 DIR = Path(__file__).resolve().parent
-INDEX_HTML = DIR.parent / "Kcalibrator-gh" / "index.html"
+INDEX_HTML = DIR / "web" / "index.html"
 
 
 class CORSRequestHandler(http.server.SimpleHTTPRequestHandler):
